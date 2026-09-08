@@ -1,0 +1,22 @@
+// Wording from saveb-source #operations-dept.
+export default {
+  accessDenied: 'You do not have permission to view this spreadsheet directory.',
+        operationsPageTitle: "Work Patrol",
+        spreadsheetDirectoryTitle: "Online Spreadsheet Hub",
+        spreadsheetDirectoryHint: "Open shared operational spreadsheets by department from one place.",
+        spreadsheetCountLabel: "spreadsheets",
+        spreadsheetSearchPlaceholder: "Search spreadsheet name or purpose",
+        spreadsheetAllDepartments: "All Departments",
+        spreadsheetDepartmentCustomerService: "Customer Service",
+        spreadsheetDepartmentPurchasing: "Purchasing",
+        spreadsheetDepartmentWarehouse: "Warehouse",
+        spreadsheetDepartmentOperations: "Operations",
+        spreadsheetDepartmentInfluencer: "Influencer",
+        spreadsheetDepartmentFinance: "Finance",
+        spreadsheetName: "Spreadsheet",
+        spreadsheetDepartment: "Department",
+        spreadsheetPurpose: "Purpose",
+        spreadsheetProvider: "Provider",
+        spreadsheetOpen: "Open",
+        spreadsheetNoResults: "No matching spreadsheets.",
+}

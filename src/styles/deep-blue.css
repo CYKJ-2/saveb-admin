@@ -1,0 +1,230 @@
+/* 深蓝主题：颜色集中在全局，html.light 继续沿用 index.scss 的浅色主题。 */
+:root {
+  --workbench-bg: hsl(var(--background-deep));
+  --workbench-panel: hsl(var(--card));
+  --workbench-input: var(--el-fill-color-blank);
+  --workbench-text: hsl(var(--foreground));
+  --workbench-muted: hsl(var(--muted-foreground));
+  --workbench-line: hsl(var(--border));
+  --workbench-blue: var(--el-color-primary);
+  --workbench-green: var(--el-color-success);
+  --workbench-amber: var(--el-color-warning);
+  --workbench-red: var(--el-color-danger);
+  --workbench-page-background: hsl(var(--background));
+  --workbench-card-background: hsl(var(--card));
+  --workbench-header-background: var(--el-table-header-bg-color);
+  --workbench-header-text: var(--el-text-color-secondary);
+  --workbench-hover: var(--el-fill-color-light);
+  --workbench-control-border: var(--el-border-color);
+  --workbench-button-background: var(--el-color-primary-light-9);
+  --workbench-button-border: var(--el-color-primary-light-5);
+  --workbench-button-text: var(--el-color-primary);
+  --workbench-button-hover: var(--el-color-primary-light-8);
+  --workbench-action-background: var(--el-color-primary);
+  --workbench-action-border: var(--el-color-primary);
+  --workbench-action-text: var(--el-color-white);
+  --workbench-action-hover: var(--el-color-primary-light-3);
+  --workbench-error-background: var(--el-color-danger-light-9);
+  --workbench-error-border: var(--el-color-danger-light-5);
+  --workbench-error-text: var(--el-color-danger);
+  --workbench-editor-background: var(--el-bg-color-overlay);
+}
+
+:root:not(.light) {
+  /* HSL token 保持与现有 Vben 页面、侧栏和布局兼容。 */
+  --background: 220 30% 3.922%;
+  --background-deep: 220 30% 3.922%;
+  --foreground: 218.824 100% 96.667%;
+  --card: 218.824 33.333% 10%;
+  --card-foreground: var(--foreground);
+  --popover: 218.571 35% 7.843%;
+  --popover-foreground: var(--foreground);
+  --muted: 218 39.474% 14.902%;
+  --muted-foreground: 215 20.225% 65.098%;
+  --primary: 213.117 93.902% 67.843%;
+  --primary-foreground: 222 47% 11%;
+  --destructive: 350.244 94.252% 72.745%;
+  --success: 158.113 64.372% 51.569%;
+  --warning: 45.396 96.682% 56.471%;
+  --info: 213.871 55.556% 78.824%;
+  --secondary: 218 39.474% 14.902%;
+  --secondary-foreground: var(--foreground);
+  --accent: 218 39.474% 14.902%;
+  --accent-dark: 214.286 37.838% 20.588%;
+  --accent-darker: 215.455 37.931% 22.745%;
+  --accent-lighter: 217.5 46.154% 10.196%;
+  --accent-hover: 214.286 37.838% 20.588%;
+  --accent-foreground: var(--foreground);
+  --heavy: var(--accent-hover);
+  --border: 217.5 30.769% 20.392%;
+  --input: 215.294 25% 26.667%;
+  --input-background: var(--popover);
+  --input-placeholder: 215 20.225% 65.098%;
+  --radius: 12px;
+  --sidebar: var(--popover);
+  --sidebar-deep: 217.5 46.154% 8%;
+  --sidebar-logo: var(--background);
+  --sidebar-text: 212.727 26.829% 83.922%;
+  --sidebar-text-active: var(--foreground);
+  --sidebar-hover: 213.117 93.902% 67.843% / .12;
+  --sidebar-active: 213.117 93.902% 67.843% / .2;
+  --sidebar-submenu: 217.5 46.154% 8%;
+  --header: var(--popover);
+  --hero-bg-from: 216 52.632% 14.902%;
+  --hero-bg-via: 192 50% 12.549%;
+  --hero-bg-to: 216 52.632% 14.902%;
+
+  --el-color-primary: #60a5fa;
+  --el-color-primary-light-3: #93c5fd;
+  --el-color-primary-light-5: #3d628e;
+  --el-color-primary-light-7: #243b58;
+  --el-color-primary-light-8: #1c304a;
+  --el-color-primary-light-9: #14273e;
+  --el-color-primary-dark-2: #3b82f6;
+  --el-color-info: #a9c4e7;
+  --el-color-info-light-3: #bfd4ef;
+  --el-color-info-light-5: #536a87;
+  --el-color-info-light-7: #30435b;
+  --el-color-info-light-8: #243b58;
+  --el-color-info-light-9: #14273e;
+  --el-color-success: #34d399;
+  --el-color-success-light-3: #6ee7b7;
+  --el-color-success-light-5: #2c7664;
+  --el-color-success-light-7: #1e5146;
+  --el-color-success-light-8: #173e37;
+  --el-color-success-light-9: #102a30;
+  --el-color-warning: #fbbf24;
+  --el-color-warning-light-3: #fcd34d;
+  --el-color-warning-light-5: #887039;
+  --el-color-warning-light-7: #564823;
+  --el-color-warning-light-8: #443720;
+  --el-color-warning-light-9: #332918;
+  --el-color-danger: #fb7185;
+  --el-color-danger-light-3: #fda4af;
+  --el-color-danger-light-5: #9f4353;
+  --el-color-danger-light-7: #6e303e;
+  --el-color-danger-light-8: #592532;
+  --el-color-danger-light-9: #451921;
+  --el-color-error: var(--el-color-danger);
+  --el-color-error-light-3: var(--el-color-danger-light-3);
+  --el-color-error-light-5: var(--el-color-danger-light-5);
+  --el-color-error-light-7: var(--el-color-danger-light-7);
+  --el-color-error-light-8: var(--el-color-danger-light-8);
+  --el-color-error-light-9: var(--el-color-danger-light-9);
+  --el-bg-color: #111722;
+  --el-bg-color-page: #07090d;
+  --el-bg-color-overlay: #0d121b;
+  --el-text-color-primary: #eef4ff;
+  --el-text-color-regular: #cbd5e1;
+  --el-text-color-secondary: #94a3b8;
+  --el-text-color-placeholder: #74849b;
+  --el-text-color-disabled: #66758a;
+  --el-border-color: #334155;
+  --el-border-color-light: #243044;
+  --el-border-color-lighter: #243044;
+  --el-border-color-extra-light: #243044;
+  --el-border-color-dark: #3d506e;
+  --el-border-color-darker: #536a87;
+  --el-fill-color: #172235;
+  --el-fill-color-light: #172235;
+  --el-fill-color-lighter: #0f1929;
+  --el-fill-color-extra-light: #0d121b;
+  --el-fill-color-dark: #203047;
+  --el-fill-color-darker: #243650;
+  --el-fill-color-blank: #0d121b;
+  --el-disabled-bg-color: #152030;
+  --el-disabled-border-color: #243044;
+  --el-disabled-text-color: #74849b;
+  --el-border-radius-base: 7px;
+  --el-mask-color: rgba(7, 9, 13, .72);
+  --el-mask-color-extra-light: rgba(7, 9, 13, .72);
+  --el-table-header-bg-color: #0d1726;
+  --el-table-header-text-color: #a9c4e7;
+  --el-table-bg-color: #111722;
+  --el-table-tr-bg-color: #111722;
+  --el-table-border-color: #243044;
+  --el-table-text-color: #eef4ff;
+  --el-table-row-hover-bg-color: #172235;
+  --el-menu-bg-color: #0d121b;
+  --el-menu-text-color: #cbd5e1;
+  --el-menu-hover-bg-color: #172235;
+  --el-menu-border-color: #243044;
+  --el-menu-active-color: #60a5fa;
+  --el-tabs-border-color: #243044;
+  --el-tabs-header-bg-color: #0d121b;
+  --el-card-bg-color: #111722;
+  --el-card-border-color: #243044;
+
+  --workbench-page-background: radial-gradient(circle at top left, rgba(37, 99, 235, .16), transparent 34%), radial-gradient(circle at top right, rgba(16, 185, 129, .1), transparent 32%), #07090d;
+  --workbench-card-background: linear-gradient(135deg, #12223a, #102a30);
+  --workbench-header-text: #a9c4e7;
+  --workbench-button-background: rgba(96, 165, 250, .12);
+  --workbench-button-border: rgba(96, 165, 250, .4);
+  --workbench-button-text: #dbeafe;
+  --workbench-button-hover: rgba(96, 165, 250, .25);
+  --workbench-action-background: #065f46;
+  --workbench-action-border: #10b981;
+  --workbench-action-text: #d1fae5;
+  --workbench-action-hover: #047857;
+  --workbench-error-background: #451921;
+  --workbench-error-border: #8e3944;
+  --workbench-error-text: #ffd3d8;
+}
+
+/* Element Plus 在组件根节点重新声明部分变量，需要在这里统一覆盖。 */
+:root:not(.light) .el-table {
+  --el-table-bg-color: var(--workbench-panel);
+  --el-table-tr-bg-color: var(--workbench-panel);
+  --el-table-header-bg-color: #0d1726;
+  --el-table-header-text-color: #a9c4e7;
+  --el-table-text-color: var(--workbench-text);
+  --el-table-border-color: var(--workbench-line);
+  --el-table-row-hover-bg-color: var(--workbench-hover);
+  --el-table-current-row-bg-color: var(--workbench-hover);
+  border: 1px solid var(--workbench-line);
+  border-radius: 8px;
+}
+:root:not(.light) .el-collapse {
+  --el-collapse-header-bg-color: transparent;
+  --el-collapse-content-bg-color: transparent;
+  --el-collapse-border-color: var(--workbench-line);
+}
+:root:not(.light) .el-card {
+  --el-card-bg-color: var(--workbench-panel);
+  --el-card-border-color: var(--workbench-line);
+  --el-card-border-radius: 12px;
+}
+:root:not(.light) .el-form-item__label { color: var(--workbench-muted); }
+:root:not(.light) .el-tabs__nav-wrap::after { background-color: var(--workbench-line); }
+:root:not(.light) .el-tree { background: transparent; }
+:root:not(.light) .el-drawer,
+:root:not(.light) .el-dialog,
+:root:not(.light) .el-message-box { background: var(--workbench-editor-background); }
+:root:not(.light) .el-drawer__header { color: var(--workbench-text); }
+:root:not(.light) .el-popper.is-dark,
+:root:not(.light) .el-popper.is-dark > .el-popper__arrow::before { background: var(--workbench-input); border-color: var(--workbench-line); color: var(--workbench-text); }
+:root:not(.light) .el-button:not(.is-link):not(.is-text):not(.el-button--primary):not(.el-button--success):not(.el-button--warning):not(.el-button--danger):not(.el-button--info) {
+  --el-button-bg-color: var(--workbench-button-background);
+  --el-button-border-color: var(--workbench-button-border);
+  --el-button-text-color: var(--workbench-button-text);
+  --el-button-hover-bg-color: var(--workbench-button-hover);
+  --el-button-hover-border-color: var(--workbench-blue);
+  --el-button-hover-text-color: var(--workbench-text);
+}
+:root:not(.light) .el-button--primary:not(.is-link):not(.is-text):not(.is-plain) {
+  --el-button-bg-color: var(--workbench-action-background);
+  --el-button-border-color: var(--workbench-action-border);
+  --el-button-text-color: var(--workbench-action-text);
+  --el-button-hover-bg-color: var(--workbench-action-hover);
+  --el-button-hover-border-color: var(--workbench-green);
+  --el-button-hover-text-color: var(--workbench-action-text);
+  --el-button-active-bg-color: #064e3b;
+  --el-button-disabled-bg-color: #143a32;
+  --el-button-disabled-border-color: #245247;
+  --el-button-disabled-text-color: #799b90;
+}
+:root:not(.light) .el-tag:not(.el-tag--dark) { --el-tag-text-color: var(--el-color-primary); }
+:root:not(.light) .el-tag--success:not(.el-tag--dark) { --el-tag-text-color: var(--el-color-success); }
+:root:not(.light) .el-tag--warning:not(.el-tag--dark) { --el-tag-text-color: var(--el-color-warning); }
+:root:not(.light) .el-tag--danger:not(.el-tag--dark) { --el-tag-text-color: var(--el-color-danger); }
+:root:not(.light) .el-tag--info:not(.el-tag--dark) { --el-tag-text-color: var(--el-color-info); }

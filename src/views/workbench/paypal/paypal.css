@@ -1,0 +1,14 @@
+.paypal-monitor .account-search { min-width: 230px; flex: 1; }
+.paypal-monitor .threshold-input { max-width: 185px; }
+.paypal-monitor .account-toolbar { gap: 8px; }
+.paypal-monitor .account-toolbar button { white-space: nowrap; }
+.paypal-monitor .balance-help { font-size: 12px; }
+.paypal-monitor .accounts-table { table-layout: fixed; min-width: 1080px; }
+.paypal-monitor .accounts-table td { vertical-align: middle; }
+.paypal-monitor .accounts-table th { white-space: normal; }
+.paypal-monitor .accounts-table td:first-child { font-size: 12px; }
+.paypal-monitor .accounts-table .numeric input { width: 100%; min-width: 75px; padding: 7px; text-align: right; font-variant-numeric: tabular-nums; }
+.paypal-monitor .accounts-table input[readonly]:not(:disabled) { cursor: pointer; }
+.paypal-monitor .accounts-table input.above-threshold { color: var(--workbench-amber); }
+.paypal-monitor .accounts-table .received-link { border: 0; padding: 7px 0; background: transparent; color: var(--blue); text-decoration: underline; font-variant-numeric: tabular-nums; }
+@media (max-width: 700px) { .paypal-monitor.legacy-workbench { padding: 14px; } .paypal-monitor .account-search { flex-basis: 100%; } }

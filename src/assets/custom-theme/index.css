@@ -1,0 +1,51 @@
+/* 自定义主题覆盖 */
+
+:root {
+  /* 覆盖 Element Plus 主题变量 */
+  --el-color-primary: #409eff;
+  --el-color-success: #67c23a;
+  --el-color-warning: #e6a23c;
+  --el-color-danger: #f56c6c;
+  --el-color-info: #909399;
+  
+  /* 圆角 */
+  --el-border-radius-base: 4px;
+  
+  /* 阴影 */
+  --el-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* 菜单样式覆盖 */
+.el-menu {
+  border-right: none !important;
+}
+
+.el-menu--collapse .el-submenu__title span {
+  display: none !important;
+}
+
+/* 表格样式优化 */
+.el-table {
+  --el-table-border-color: #ebeef5;
+}
+
+.el-table th {
+  background-color: #fafafa !important;
+}
+
+/* 按钮样式优化 */
+.el-button {
+  --el-button-border-radius: 4px;
+}
+
+/* 输入框样式优化 */
+.el-input__wrapper {
+  border-radius: 4px;
+}
+
+/* 卡片样式 */
+.el-card {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.08);
+}

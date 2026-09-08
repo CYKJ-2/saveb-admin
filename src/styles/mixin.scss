@@ -1,0 +1,148 @@
+// ========================================
+// SCSS Mixins - 常用工具函数
+// ========================================
+
+// -------- 清除浮动 --------
+@mixin clearfix {
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+// -------- 文字省略 --------
+@mixin text-ellipsis($lines: 1) {
+  @if $lines == 1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $lines;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// -------- Flex 布局 --------
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+// -------- 滚动条样式 --------
+@mixin scrollbar($width: 6px) {
+  &::-webkit-scrollbar {
+    width: $width;
+    height: $width;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(144, 147, 153, 0.3);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(144, 147, 153, 0.5);
+    }
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+// -------- 响应式隐藏 --------
+@mixin mobile-hidden {
+  @media screen and (max-width: 767px) {
+    display: none !important;
+  }
+}
+
+@mixin pc-hidden {
+  @media screen and (min-width: 768px) {
+    display: none !important;
+  }
+}
+
+// -------- 动画过渡 --------
+@mixin transition($property: all, $duration: 0.3s, $timing: ease) {
+  transition: $property $duration $timing;
+}
+
+// -------- 输入框样式 --------
+@mixin input-style {
+  height: 32px;
+  line-height: 32px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  padding: 0 12px;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: $primary-color;
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #c0c4cc;
+  }
+}
+
+// -------- 按钮基础样式 --------
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// -------- 卡片阴影 --------
+@mixin card-shadow {
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.08);
+
+  &:hover {
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.12);
+  }
+}
+
+// -------- 分页器样式 --------
+@mixin pagination-base {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 16px 0;
+}
+
+// -------- 表格行悬停 --------
+@mixin table-row-hover {
+  &:hover > td {
+    background-color: #f5f7fa;
+  }
+}

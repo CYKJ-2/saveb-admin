@@ -1,0 +1,22 @@
+// Wording from saveb-source #operations-dept.
+export default {
+  accessDenied: '暂无查看在线表格目录的权限。',
+        operationsPageTitle: "全域工作巡检",
+        spreadsheetDirectoryTitle: "在线表格中心",
+        spreadsheetDirectoryHint: "按照部门集中访问公司共享的业务表格。",
+        spreadsheetCountLabel: "张表格",
+        spreadsheetSearchPlaceholder: "搜索表格名称或用途",
+        spreadsheetAllDepartments: "全部部门",
+        spreadsheetDepartmentCustomerService: "客服部",
+        spreadsheetDepartmentPurchasing: "采购部",
+        spreadsheetDepartmentWarehouse: "仓储部",
+        spreadsheetDepartmentOperations: "运营部",
+        spreadsheetDepartmentInfluencer: "达人部",
+        spreadsheetDepartmentFinance: "财务部",
+        spreadsheetName: "表格名称",
+        spreadsheetDepartment: "所属部门",
+        spreadsheetPurpose: "用途",
+        spreadsheetProvider: "平台",
+        spreadsheetOpen: "打开",
+        spreadsheetNoResults: "没有符合条件的表格。",
+}

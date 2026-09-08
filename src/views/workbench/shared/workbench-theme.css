@@ -1,0 +1,16 @@
+/* 原生业务工作台只适配颜色变量；明暗主题均由全局控制。 */
+.legacy-workbench,
+.workbench-theme {
+  --bg: var(--workbench-bg);
+  --panel: var(--workbench-panel);
+  --panel-2: var(--workbench-input);
+  --text: var(--workbench-text);
+  --muted: var(--workbench-muted);
+  --line: var(--workbench-line);
+  --blue: var(--workbench-blue);
+  --green: var(--workbench-green);
+  --amber: var(--workbench-amber);
+  --red: var(--workbench-red);
+  color: var(--text);
+  background: var(--workbench-page-background);
+}

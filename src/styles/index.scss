@@ -1,0 +1,592 @@
+/**
+ * SAVEB Admin 全局样式 (Vben Admin 风格)
+ *
+ * 主题策略：
+ * - 深色主题在 deep-blue.css 统一为 SA / Invoice 深蓝配色
+ * - 浅色主题 = 通过 html.light 切换
+ * - 所有组件均通过 CSS 变量实现主题适配，禁止硬编码 #fff / #000
+ *
+ * 设计变量 (HSL 风格，与 vben design-tokens 保持一致):
+ *   --background        主背景
+ *   --background-deep   内容区域背景
+ *   --foreground        主前景色
+ *   --card              卡片背景
+ *   --card-foreground   卡片前景
+ *   --border            边框
+ *   --primary           主色
+ *   --sidebar           侧边栏背景
+ *   --header            顶栏背景
+ *   --radius            圆角
+ *   --font-size-base    基础字号
+ */
+
+/* ========================= 基础 token（深色由 deep-blue.css 覆盖） ========================= */
+:root {
+  /* 弹层 z-index */
+  --popup-z-index: 2000;
+
+  /* 字体 */
+  --font-family: -apple-system, blinkmacsystemfont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', sans-serif;
+
+  /* 默认即深色（vben 风格） */
+  --background: 222.34deg 10.43% 12.27%;        /* 深灰 #1e1f24 */
+  --background-deep: 220deg 13.06% 9%;          /* 更深 #15171c */
+  --foreground: 0 0% 95%;                        /* 主文字 #f2f2f2 */
+
+  --card: 222.34deg 10.43% 12.27%;              /* 卡片同主背景 */
+  --card-foreground: 210 40% 98%;
+
+  --popover: 0 0% 14.2%;
+  --popover-foreground: 210 40% 98%;
+
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+
+  --primary: 212 100% 45%;
+  --primary-foreground: 0 0% 98%;
+
+  --destructive: 359.21 68.47% 56.47%;
+  --destructive-foreground: 0 0% 98%;
+
+  --info: 220 4% 58%;
+  --info-foreground: 220 4% 58%;
+
+  --success: 144 57% 58%;
+  --success-foreground: 0 0% 98%;
+
+  --warning: 42 84% 61%;
+  --warning-foreground: 0 0% 98%;
+
+  --secondary: 240 5% 17%;
+  --secondary-foreground: 0 0% 98%;
+
+  --accent: 216 5% 19%;
+  --accent-dark: 240 0% 22%;
+  --accent-darker: 240 0% 26%;
+  --accent-lighter: 216 5% 12%;
+  --accent-hover: 216 5% 24%;
+  --accent-foreground: 0 0% 98%;
+
+  --heavy: 216 5% 24%;
+  --heavy-foreground: var(--accent-foreground);
+
+  --border: 240 3.7% 22%;
+
+  --input: 0deg 0% 100% / 10%;
+  --input-placeholder: 218deg 11% 65%;
+  --input-background: 0deg 0% 100% / 5%;
+
+  --ring: 222.2 84% 4.9%;
+
+  --radius: 0.5rem;
+
+  /* 自定义 */
+  --overlay: 0deg 0% 0% / 40%;
+  --overlay-content: 0deg 0% 0% / 40%;
+
+  --font-size-base: 14px;
+
+  /* 组件 */
+  --sidebar: 222.34deg 10.43% 12.27%;
+  --sidebar-deep: 220deg 13.06% 9%;
+  --sidebar-logo: 220deg 13.06% 6%;
+  --sidebar-text: 0 0% 75%;
+  --sidebar-text-active: 0 0% 98%;
+  --sidebar-hover: 0 0% 100% / 0.06;
+  --sidebar-active: 212 100% 45% / 0.18;
+  --sidebar-submenu: 220deg 13.06% 7%;
+  --menu: var(--sidebar);
+
+  --header: 222.34deg 10.43% 12.27%;
+
+  /* 欢迎头部（hero）专用 token */
+  --hero-bg-from: 222.34deg 10.43% 16%;
+  --hero-bg-via: 220deg 13.06% 22%;
+  --hero-bg-to: 222.34deg 10.43% 16%;
+  --hero-glow: 212 100% 45% / 0.2;
+  --hero-fg: 0 0% 100%;
+  --hero-fg-muted: 0 0% 100% / 0.7;
+  --hero-fg-dim: 0 0% 100% / 0.6;
+  --hero-shadow: 0 4px 16px hsl(0 0% 0% / 0.25);
+
+  color-scheme: dark;
+}
+
+/* ========================= 浅色主题 (html.light) ========================= */
+html.light {
+  --background: 0 0% 100%;
+  --background-deep: 216 20.11% 95.47%;
+  --foreground: 210 6% 21%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+
+  --primary-foreground: 0 0% 98%;
+  --destructive-foreground: 0 0% 98%;
+  --info-foreground: 220 4% 58%;
+  --success-foreground: 0 0% 98%;
+  --warning-foreground: 0 0% 98%;
+
+  --secondary: 240 5% 96%;
+  --secondary-foreground: 240 6% 10%;
+
+  --accent: 240 5% 96%;
+  --accent-dark: 216 14% 93%;
+  --accent-darker: 216 11% 91%;
+  --accent-lighter: 240 0% 98%;
+  --accent-hover: 200deg 10% 90%;
+  --accent-foreground: 240 6% 10%;
+
+  --heavy: 192deg 9.43% 89.61%;
+  --heavy-foreground: var(--accent-foreground);
+
+  --border: 240 5.9% 90%;
+
+  --input: 240deg 5.88% 90%;
+  --input-placeholder: 217 10.6% 65%;
+  --input-background: 0 0% 100%;
+
+  --overlay: 0 0% 0% / 45%;
+  --overlay-content: 0 0% 95% / 45%;
+
+  --sidebar: 0 0% 100%;
+  --sidebar-deep: 0 0% 100%;
+  --sidebar-logo: 216 28% 96%;
+  --sidebar-text: 220 9% 26%;
+  --sidebar-text-active: 222.2 47% 11%;
+  --sidebar-hover: 212 100% 45% / 0.08;
+  --sidebar-active: 212 100% 45% / 0.12;
+  --sidebar-submenu: 220 14% 98%;
+  --menu: var(--sidebar);
+  --header: 0 0% 100%;
+
+  /* 浅色 hero：淡蓝渐变 + 深字 */
+  --hero-bg-from: 212 100% 96%;
+  --hero-bg-via: 212 100% 92%;
+  --hero-bg-to: 212 100% 96%;
+  --hero-glow: 212 100% 60% / 0.18;
+  --hero-fg: 222.2 47% 11%;
+  --hero-fg-muted: 222 14% 30%;
+  --hero-fg-dim: 220 9% 46%;
+  --hero-shadow: 0 4px 16px hsl(220 30% 60% / 0.15);
+
+  color-scheme: light;
+}
+
+/* ========================= 基础 ========================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+  font-size: var(--font-size-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*
+ * 主题切换圆形扩散动画已迁移到 ThemeToggle.vue 组件内的覆盖层实现。
+ * 因为方向不同（亮→暗：按钮扩散；暗→亮：左下角收缩），
+ * 使用 Vue transition + 单个覆盖层 div 比 View Transitions API 更灵活。
+ *
+ * 保留此处注释仅为说明：全局 view-transition 不再被触发，避免影响其他页面过渡。
+ */
+
+body {
+  height: 100%;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+#app {
+  height: 100%;
+  background-color: hsl(var(--background));
+}
+
+/* ========================= 链接 ========================= */
+a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: hsl(var(--primary) / 0.8);
+  }
+}
+
+/* ========================= 图片 ========================= */
+img {
+  vertical-align: middle;
+  max-width: 100%;
+}
+
+/* ========================= 滚动条 ========================= */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+
+  &:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ========================= Element Plus 主题适配（深色默认） ========================= */
+:root {
+  /* 主色 — 蓝色调，vben 默认 */
+  --el-color-primary: hsl(212 100% 45%);
+  --el-color-primary-light-3: hsl(212 100% 55%);
+  --el-color-primary-light-5: hsl(212 100% 65%);
+  --el-color-primary-light-7: hsl(212 100% 75%);
+  --el-color-primary-light-8: hsl(212 100% 80%);
+  --el-color-primary-light-9: hsl(212 100% 88%);
+  --el-color-primary-dark-2: hsl(212 100% 35%);
+
+  --el-color-success: hsl(144 57% 58%);
+  --el-color-warning: hsl(42 84% 61%);
+  --el-color-danger: hsl(359 68% 56%);
+  --el-color-error: hsl(359 68% 56%);
+  --el-color-info: hsl(220 4% 58%);
+
+  /* Element Plus 关键背景（深色） */
+  --el-bg-color: hsl(222.34deg 10.43% 12.27%);
+  --el-bg-color-page: hsl(220deg 13.06% 9%);
+  --el-bg-color-overlay: hsl(0 0% 14.2%);
+
+  /* Element Plus 文字 */
+  --el-text-color-primary: hsl(0 0% 95%);
+  --el-text-color-regular: hsl(0 0% 80%);
+  --el-text-color-secondary: hsl(0 0% 65%);
+  --el-text-color-placeholder: hsl(0 0% 45%);
+  --el-text-color-disabled: hsl(0 0% 35%);
+
+  /* Element Plus 边框 */
+  --el-border-color: hsl(240 3.7% 22%);
+  --el-border-color-light: hsl(240 3.7% 18%);
+  --el-border-color-lighter: hsl(240 3.7% 15%);
+  --el-border-color-extra-light: hsl(240 3.7% 12%);
+  --el-border-color-dark: hsl(240 3.7% 30%);
+  --el-border-color-darker: hsl(240 3.7% 40%);
+  --el-border-color-hover: hsl(212 100% 45%);
+
+  /* Element Plus 填充色 */
+  --el-fill-color: hsl(0 0% 100% / 0.04);
+  --el-fill-color-light: hsl(0 0% 100% / 0.06);
+  --el-fill-color-lighter: hsl(0 0% 100% / 0.08);
+  --el-fill-color-extra-light: hsl(0 0% 100% / 0.03);
+  --el-fill-color-dark: hsl(0 0% 100% / 0.10);
+  --el-fill-color-darker: hsl(0 0% 100% / 0.14);
+  --el-fill-color-blank: hsl(222.34deg 10.43% 12.27%);
+
+  /* Element Plus 圆角 */
+  --el-border-radius-base: 6px;
+  --el-border-radius-small: 4px;
+  --el-border-radius-round: 9999px;
+
+  /* Element Plus 阴影 */
+  --el-box-shadow-light: 0 0 6px hsl(0 0% 0% / 0.2);
+  --el-box-shadow: 0 12px 32px 4px hsl(0 0% 0% / 0.36),
+    0 8px 20px hsl(0 0% 0% / 0.24);
+  --el-box-shadow-dark: 0 16px 48px 16px hsl(0 0% 0% / 0.48),
+    0 12px 32px hsl(0 0% 0% / 0.32),
+    0 8px 16px -8px hsl(0 0% 0% / 0.48);
+
+  /* Element Plus 遮罩 */
+  --el-mask-color: hsl(0 0% 0% / 0.7);
+
+  /* Element Plus 表格 */
+  --el-table-bg-color: hsl(222.34deg 10.43% 12.27%);
+  --el-table-tr-bg-color: hsl(222.34deg 10.43% 12.27%);
+  --el-table-header-bg-color: hsl(220deg 13.06% 9%);
+  --el-table-row-hover-bg-color: hsl(0 0% 100% / 0.06);
+  --el-table-border-color: hsl(240 3.7% 22%);
+  --el-table-text-color: hsl(0 0% 80%);
+  --el-table-header-text-color: hsl(0 0% 65%);
+
+  /* Element Plus 菜单 */
+  --el-menu-bg-color: hsl(222.34deg 10.43% 12.27%);
+  --el-menu-text-color: hsl(0 0% 80%);
+  --el-menu-hover-bg-color: hsl(0 0% 100% / 0.06);
+  --el-menu-border-color: hsl(240 3.7% 22%);
+  --el-menu-active-color: hsl(212 100% 60%);
+
+  /* Element Plus 子菜单 */
+  --el-submenu-bg-color: hsl(220deg 13.06% 9%);
+  --el-submenu-hover-bg-color: hsl(0 0% 100% / 0.06);
+  --el-submenu-title-bg-color: hsl(220deg 13.06% 9%);
+
+  /* Element Plus 标签页 */
+  --el-tabs-border-color: hsl(240 3.7% 22%);
+  --el-tabs-header-bg-color: hsl(222.34deg 10.43% 12.27%);
+  --el-tabs-nav-wrap-color: transparent;
+  --el-color-light: hsl(240 3.7% 22%);
+  --el-color-lighter: hsl(240 3.7% 18%);
+
+  /* Element Plus 标签 */
+  --el-tag-bg-color: hsl(0 0% 100% / 0.06);
+  --el-tag-border-color: hsl(240 3.7% 22%);
+  --el-tag-text-color: hsl(0 0% 85%);
+
+  /* Element Plus 卡片 */
+  --el-card-bg-color: hsl(222.34deg 10.43% 12.27%);
+  --el-card-border-color: hsl(240 3.7% 22%);
+
+  /* Element Plus 字体 */
+  --el-font-size-base: 14px;
+}
+
+/* 浅色覆盖 */
+html.light {
+  --el-bg-color: #ffffff;
+  --el-bg-color-page: #f0f2f5;
+  --el-bg-color-overlay: #ffffff;
+
+  --el-text-color-primary: #303133;
+  --el-text-color-regular: #606266;
+  --el-text-color-secondary: #909399;
+  --el-text-color-placeholder: #a8abb2;
+  --el-text-color-disabled: #c0c4cc;
+
+  --el-border-color: #dcdfe6;
+  --el-border-color-light: #e4e7ed;
+  --el-border-color-lighter: #ebeef5;
+  --el-border-color-extra-light: #f2f6fc;
+  --el-border-color-dark: #d4d7de;
+  --el-border-color-darker: #cdd0d6;
+
+  --el-fill-color: #f0f2f5;
+  --el-fill-color-light: #f5f7fa;
+  --el-fill-color-lighter: #fafafa;
+  --el-fill-color-extra-light: #fafcff;
+  --el-fill-color-dark: #ebeef5;
+  --el-fill-color-darker: #e6e8eb;
+  --el-fill-color-blank: #ffffff;
+
+  --el-table-bg-color: #ffffff;
+  --el-table-tr-bg-color: #ffffff;
+  --el-table-header-bg-color: #f5f7fa;
+  --el-table-row-hover-bg-color: #f5f7fa;
+  --el-table-border-color: #ebeef5;
+  --el-table-text-color: #606266;
+  --el-table-header-text-color: #909399;
+
+  /* 菜单 */
+  --el-menu-bg-color: #ffffff;
+  --el-menu-text-color: #303133;
+  --el-menu-hover-bg-color: #ecf5ff;
+  --el-menu-border-color: #e6e6e6;
+  --el-menu-active-color: #409eff;
+
+  --el-submenu-bg-color: #ffffff;
+  --el-submenu-hover-bg-color: #ecf5ff;
+  --el-submenu-title-bg-color: #ffffff;
+
+  /* 标签页 */
+  --el-tabs-border-color: #dcdfe6;
+  --el-tabs-header-bg-color: #ffffff;
+  --el-color-light: #e9eef5;
+  --el-color-lighter: #eaf2fb;
+
+  /* 标签 */
+  --el-tag-bg-color: #ecf5ff;
+  --el-tag-border-color: #d9ecff;
+  --el-tag-text-color: #409eff;
+
+  /* 卡片 */
+  --el-card-bg-color: #ffffff;
+  --el-card-border-color: #ebeef5;
+}
+
+/* ========================= 工具类 ========================= */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.text-primary { color: hsl(var(--primary)); }
+.text-success { color: hsl(var(--success)); }
+.text-warning { color: hsl(var(--warning)); }
+.text-danger { color: hsl(var(--destructive)); }
+.text-info { color: hsl(var(--info)); }
+
+.bg-card { background-color: hsl(var(--card)); }
+.bg-page { background-color: hsl(var(--background)); }
+.bg-container { background-color: hsl(var(--background-deep)); }
+
+.border-base { border: 1px solid hsl(var(--border)); }
+
+/* ========================= Flex 工具 ========================= */
+.flex { display: flex; }
+.flex-center { @include flex-center; }
+.flex-between { @include flex-between; }
+.flex-col { flex-direction: column; }
+.flex-1 { flex: 1; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
+
+/* ========================= Spacing 工具 ========================= */
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+.ml-8 { margin-left: 8px; }
+.ml-16 { margin-left: 16px; }
+.mr-8 { margin-right: 8px; }
+.mr-16 { margin-right: 16px; }
+.p-16 { padding: 16px; }
+.p-24 { padding: 24px; }
+.gap-8 { gap: 8px; }
+.gap-16 { gap: 16px; }
+
+/* ========================= 文字省略 ========================= */
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ========================= 动画 ========================= */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+
+/* ========================= 通用容器 ========================= */
+.page-container {
+  padding: 16px;
+  background-color: hsl(var(--background));
+  min-height: calc(100vh - #{$navbarHeight} - #{$tagsViewHeight});
+  color: hsl(var(--foreground));
+}
+
+.card-container {
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: 0 1px 4px hsl(0 0% 0% / 0.15);
+}
+
+/* 表格容器 */
+.table-container {
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border: 1px solid hsl(var(--border));
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 4px hsl(0 0% 0% / 0.15);
+
+  .table-header {
+    @include flex-between;
+    margin-bottom: 16px;
+
+    .table-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: hsl(var(--foreground));
+    }
+  }
+
+  .table-footer {
+    @include flex-between;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid hsl(var(--border));
+  }
+}
+
+/* 表单容器 */
+.form-container {
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border: 1px solid hsl(var(--border));
+  padding: 24px;
+  border-radius: var(--radius);
+  box-shadow: 0 1px 4px hsl(0 0% 0% / 0.15);
+  max-width: 800px;
+}
+
+/* 空状态 */
+.empty-state {
+  @include flex-center;
+  flex-direction: column;
+  padding: 60px 0;
+  color: hsl(var(--muted-foreground));
+
+  .empty-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+    color: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  .empty-text {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+}
+
+/* 加载状态 */
+.loading-container {
+  @include flex-center;
+  min-height: 200px;
+}

@@ -1,0 +1,24 @@
+# Dependencies and generated builds
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.eslintrc-auto-import.json
+
+# Local environment; only sanitized examples belong in Git
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# IDE, runtime logs and temporary files
+.idea/
+.vscode/
+*.log
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+/deploy/image.ref

@@ -1,0 +1,32 @@
+/* 订单工作台复用全局主题；这里只保留专属排版及挂载到 body 的弹层样式。 */
+.order-dashboard .el-table { font-size: 13px; }
+.order-dashboard .el-table .el-table__cell { padding: 11px 0; }
+.order-dashboard .el-collapse { border: 0; }
+.order-dashboard .el-collapse-item__header { font-size: 16px; font-weight: 600; }
+.order-dashboard .el-collapse-item__wrap { border-bottom: 0; }
+.order-dashboard .el-input__wrapper,
+.order-dashboard .el-select__wrapper,
+.order-workbench-drawer .el-input__wrapper { min-height: 36px; }
+.order-workbench-popper.workbench-theme,
+.order-workbench-drawer.workbench-theme { background: var(--workbench-editor-background); border-color: var(--workbench-line); }
+.order-workbench-popper .el-popper__arrow::before { background: var(--workbench-editor-background); border-color: var(--workbench-line); }
+.order-workbench-drawer .el-drawer__header { padding-bottom: 18px; margin-bottom: 0; border-bottom: 1px solid var(--workbench-line); }
+.order-workbench-drawer .el-drawer__footer { border-top: 1px solid var(--workbench-line); }
+
+/* 列表操作与 Invoice 的描边按钮一致。 */
+.order-dashboard .order-edit-button {
+  height: auto;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--workbench-button-text);
+  background: var(--workbench-button-background);
+  border-color: var(--workbench-button-border);
+}
+.order-dashboard .order-edit-button:hover { background: var(--workbench-button-hover); }
+.order-editor .el-drawer__header { padding: 24px 24px 0; margin-bottom: 8px; border-bottom: 0; }
+.order-editor .el-drawer__body { padding: 0 24px; }
+.order-editor .el-drawer__footer { padding: 16px 24px 24px; border-top: 0; }
+.order-editor .el-drawer__footer .el-button { height: 40px; padding: 10px 16px; font-weight: 700; }

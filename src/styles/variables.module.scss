@@ -1,0 +1,25 @@
+// ========================================
+// SAVEB Admin 样式变量 (CSS Module 版本)
+// 供 JS / TS 读取的常量值
+// SCSS 变量请使用 variables.scss
+// ========================================
+
+// :export 用于 JS 读取
+:export {
+  menuText: #bfcbd9;
+  menuActiveText: #ffffff;
+  subMenuActiveText: #f4f4f5;
+  menuBg: #001529;
+  menuHover: rgba(255, 255, 255, 0.08);
+  subMenuBg: #000c17;
+  subMenuHover: #001528;
+  sideBarWidth: 210px;
+  sideBarCollapsedWidth: 54px;
+  navbarHeight: 50px;
+  tagsViewHeight: 34px;
+  primaryColor: #409eff;
+  successColor: #67c23a;
+  warningColor: #e6a23c;
+  dangerColor: #f56c6c;
+  infoColor: #909399;
+}
