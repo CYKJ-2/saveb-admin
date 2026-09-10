@@ -17,6 +17,11 @@ function dropImage(event: DragEvent, item: Row) {
   const file = event.dataTransfer?.files[0]
   if (file) emit('upload', file, item)
 }
+
+function removeImage(item: Row) {
+  item.image_attachment_id = null
+  item.image = null
+}
 </script>
 
 <template>
@@ -40,7 +45,7 @@ function dropImage(event: DragEvent, item: Row) {
           <label>{{ t('pages.invoiceForm.productImage') }}<input type="file" accept="image/png,image/jpeg,image/webp" :disabled="busy" @change="chooseImage($event, item)" /></label>
           <InvoiceImage v-if="item.image_attachment_id" :image="item.image" :id="item.image_attachment_id" thumbnail />
           <p v-else class="muted">{{ t('pages.invoiceForm.imageHelp') }}</p>
-          <button v-if="item.image_attachment_id" type="button" :disabled="busy" @click="item.image_attachment_id = null">{{ t('pages.invoiceForm.removeImage') }}</button>
+          <button v-if="item.image_attachment_id" type="button" :disabled="busy" @click="removeImage(item)">{{ t('pages.invoiceForm.removeImage') }}</button>
         </div>
       </div>
     </article>

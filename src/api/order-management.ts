@@ -1,9 +1,14 @@
 import { request } from '@/utils/request'
+export interface OrderProduct {
+  name: string;
+  url?: string;
+  quantity?: number;
+}
 export interface OrderRow {
   id: number | string; kind: string; orderId: string; paypalOrderId: string; customerFullName: string;
   clientSite: string; classification: string; topInfluencer: string; recipientPaypal: string;
   paymentStatus: string; amount: number; amountUsd: number | null; currency: string; items: number;
-  productName: string; createTime: string; date: string; staff: string; primaryStaffCode?: string; version: number;
+  productName: string; products?: OrderProduct[]; createTime: string; date: string; staff: string; primaryStaffCode?: string; version: number;
   staffAllocations: { staffCode: string; shareRatio: number }[];
 }
 export interface Metric { key: string; orders: number; items: number; amountUsd: number; amountOriginal?: number; share: number; series?: Record<string, number>; orderSeries?: Record<string, number> }

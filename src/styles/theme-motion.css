@@ -1,0 +1,31 @@
+/* 只过渡颜色，不隐藏页面或改变 transform，也不影响菜单、弹层的点击区域。 */
+html:root :where(
+  #app, .app-wrapper, .app-main, .page-container, .legacy-workbench,
+  .workbench-theme, .panel, .card, .module-panel, .date-toolbar, .payment-strip,
+  .card-container, .table-container, .form-container, .el-card,
+  .tags-view-container, .tags-view-item, .editor-content,
+  .el-dialog, .el-drawer, .el-message-box,
+  .el-input__wrapper, .el-select__wrapper, .el-textarea__inner,
+  .legacy-workbench th, .legacy-workbench td,
+  .el-table, .el-table th.el-table__cell, .el-table td.el-table__cell
+) {
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:root :where(
+    body, #app, .app-wrapper, .main-container, .app-main, .fixed-header,
+    .sidebar-container, .sidebar, .sidebar-logo, .logo-text,
+    .sidebar-menu .el-menu-item, .sidebar-menu .el-sub-menu__title,
+    .navbar, .theme-toggle, .page-container, .legacy-workbench,
+    .workbench-theme, .panel, .card, .module-panel, .date-toolbar, .payment-strip,
+    .card-container, .table-container, .form-container, .el-card,
+    .tags-view-container, .tags-view-item, .editor-content,
+    .el-dialog, .el-drawer, .el-message-box,
+    .el-input__wrapper, .el-select__wrapper, .el-textarea__inner,
+    .legacy-workbench th, .legacy-workbench td,
+    .el-table, .el-table th.el-table__cell, .el-table td.el-table__cell
+  ) {
+    transition-duration: 0s !important;
+  }
+}

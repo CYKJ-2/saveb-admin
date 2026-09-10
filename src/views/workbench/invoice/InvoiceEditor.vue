@@ -30,7 +30,7 @@ let formRevision = 0
 const uploadPreviewUrls = new Set<string>()
 
 function emptyItem() {
-  return { product_name: '', description: '', quantity: 1, price: '', notes: '', image_attachment_id: null }
+  return { product_name: '', description: '', quantity: 1, price: '', notes: '', image_attachment_id: null, image: null }
 }
 
 function initialForm(): Row {
@@ -40,7 +40,7 @@ function initialForm(): Row {
     customer_full_name: '', customer_email: '', phone_number: '', country: '', address: '',
     invoice_link: '', recipient_paypal: '', amount_usd: '', expedited_shipping: false,
     gift_box: 'Has', fixed_discount: null, percentage_discount: null,
-    invoice_screenshot_attachment_id: null, items: [emptyItem()],
+    invoice_screenshot_attachment_id: null, invoice_screenshot_image: null, items: [emptyItem()],
     allocations: [{ staff_code: '', percent: 100, commission_percent: 0 }],
     ...JSON.parse(JSON.stringify(props.invoice || {})),
   }

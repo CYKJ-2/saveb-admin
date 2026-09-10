@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ApiPagination from '@/components/common/ApiPagination.vue'
+import LoadingRegion from '@/components/common/LoadingRegion.vue'
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ElMessage } from 'element-plus'
@@ -11,14 +12,16 @@ const user = useUserStore(), { locale } = useI18n()
 const zh = computed(() => locale.value.startsWith('zh'))
 const text = (cn: string, en: string) => zh.value ? cn : en
 const can = (action: string) => user.hasPermission(`dashboard.collector.${action}`)
-const schedule = ref<CollectionSchedule | null>(null), interval = ref(30), saving = ref(false)
+const schedule = ref<CollectionSchedule | null>(null), interval = ref(30), saving = ref(false), scheduleLoading = ref(false)
 const jobs = ref<CollectionJob[]>([]), total = ref(0), page = ref(1), loading = ref(false), loadError = ref(false)
 const pageSize = ref(20), detailSize = ref(20)
 const range = ref<[string, string]>([businessDate(), businessDate()])
 const form = reactive({ mode: (can('collect') ? 'history' : 'reprocess') as CollectionRequest['mode'], dryRun: false, sourceJobId: '' })
 const submitting = ref(false), pending = ref<CollectionRequest | null>(null)
 const drawer = ref(false), detail = ref<(CollectionJob & {chunks: CollectionPage<CollectionChunk>}) | null>(null), detailPage = ref(1)
-let timer: ReturnType<typeof setTimeout> | undefined, disposed = false
+const detailLoading = ref(false)
+let detailRevision = 0
+let disposed = false
 const format = (value?: string | null) => value ? new Intl.DateTimeFormat(locale.value, { timeZone: 'Asia/Shanghai', dateStyle: 'short', timeStyle: 'medium', hour12: false }).format(new Date(value)) : '—'
 const labels = computed<Record<string, string>>(() => ({ queued: text('排队中', 'Queued'), running: text('运行中', 'Running'), retrying: text('重试中', 'Retrying'), succeeded: text('成功', 'Succeeded'), failed: text('失败', 'Failed'), partial_failed: text('部分失败', 'Partially failed'), cancelled: text('已取消', 'Cancelled'), history: text('范围更新', 'Range update'), missing: text('仅补缺', 'Missing dates'), reprocess: text('归档重算', 'Archive recalculation'), refresh: text('字段刷新', 'Field refresh'), today: text('当天采集', 'Today') }))
 const label = (value: string) => labels.value[value] || value
@@ -36,16 +39,26 @@ async function load() {
   if (disposed || loading.value) return
   loading.value = true
   try {
-    const [result, currentSchedule] = await Promise.all([getCollectionJobs(page.value, pageSize.value), getCollectionSchedule()])
+    const result = await getCollectionJobs(page.value, pageSize.value)
     if (disposed) return
-    schedule.value = currentSchedule
     jobs.value = result.items; total.value = result.total; loadError.value = false
-    if (drawer.value && detail.value) await showDetail(detail.value.jobId, detailPage.value)
   } catch { if (!disposed) loadError.value = true }
-  finally {
-    loading.value = false
-    if (!disposed) { clearTimeout(timer); timer = setTimeout(load, loadError.value ? 30000 : 10000) }
-  }
+  finally { loading.value = false }
+}
+async function loadSchedule() {
+  if (disposed || scheduleLoading.value) return
+  scheduleLoading.value = true
+  try {
+    const result = await getCollectionSchedule()
+    if (disposed) return
+    if (!schedule.value) interval.value = result.intervalMinutes
+    schedule.value = result
+  } catch { /* 请求层展示错误，等待用户手动刷新 */ }
+  finally { scheduleLoading.value = false }
+}
+// 只在进入页面或点击刷新时更新列表和计划；翻页仅查询任务列表。
+async function refresh() {
+  await Promise.all([load(), loadSchedule()])
 }
 async function save() {
   saving.value = true
@@ -77,11 +90,14 @@ async function submit() {
   } finally { submitting.value = false }
 }
 async function showDetail(id: string, selectedPage = 1) {
+  const current = ++detailRevision
+  detailLoading.value = true
   try {
     const result = await getCollectionJob(id, selectedPage, detailSize.value)
-    if (disposed) return
+    if (disposed || current !== detailRevision) return
     detail.value = result; detailPage.value = selectedPage; drawer.value = true
   } catch { /* 请求层展示错误 */ }
+  finally { if (current === detailRevision) detailLoading.value = false }
 }
 function useArchive(job: CollectionJob) {
   if (pending.value) return
@@ -89,11 +105,8 @@ function useArchive(job: CollectionJob) {
   if (job.params.start && job.params.end) range.value = [job.params.start, job.params.end]
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
-onMounted(async () => {
-  try { const result = await getCollectionSchedule(); if (!disposed) { schedule.value = result; interval.value = result.intervalMinutes } } catch { /* 请求层展示错误 */ }
-  await load()
-})
-onBeforeUnmount(() => { disposed = true; clearTimeout(timer) })
+onMounted(refresh)
+onBeforeUnmount(() => { disposed = true })
 </script>
 
 <template>
@@ -126,9 +139,9 @@ onBeforeUnmount(() => { disposed = true; clearTimeout(timer) })
       </el-card>
     </div>
     <el-card shadow="never">
-      <template #header><div class="list-heading"><span>{{ text('采集任务', 'Collection tasks') }}</span><el-button :loading="loading" @click="load">{{ text('刷新', 'Refresh') }}</el-button></div></template>
-      <el-alert v-if="loadError" type="error" :closable="false" :title="text('任务列表读取失败，正在重试', 'Unable to load tasks; retrying')" />
-      <el-table :data="jobs" stripe>
+      <template #header><div class="list-heading"><span>{{ text('采集任务', 'Collection tasks') }}</span><el-button :loading="loading || scheduleLoading" @click="refresh">{{ text('刷新', 'Refresh') }}</el-button></div></template>
+      <el-alert v-if="loadError" type="error" :closable="false" :title="text('任务列表读取失败，请点击刷新重试', 'Unable to load tasks. Click Refresh to retry.')" />
+      <LoadingRegion :loading="loading"><el-table :data="jobs" stripe>
         <el-table-column :label="text('创建时间', 'Created')" min-width="165"><template #default="{row}">{{ format(row.createdAt) }}</template></el-table-column>
         <el-table-column :label="text('模式', 'Mode')" min-width="110"><template #default="{row}">{{ label(row.mode) }}<small v-if="row.publication === 'preview'">{{ text('预览，不入库', 'Preview only') }}</small></template></el-table-column>
         <el-table-column :label="text('日期范围', 'Date range')" min-width="200"><template #default="{row}">{{ row.params.start || '—' }} ~ {{ row.params.end || '—' }}</template></el-table-column>
@@ -137,14 +150,15 @@ onBeforeUnmount(() => { disposed = true; clearTimeout(timer) })
         <el-table-column :label="text('完成时间', 'Finished')" min-width="165"><template #default="{row}">{{ format(row.completedAt) }}</template></el-table-column>
         <el-table-column :label="text('操作', 'Actions')" width="170" fixed="right"><template #default="{row}"><el-button link type="primary" @click="showDetail(row.jobId)">{{ text('详情', 'Details') }}</el-button><el-button v-if="can('reprocess')" link type="primary" :disabled="!!pending" @click="useArchive(row)">{{ text('使用归档', 'Use archive') }}</el-button></template></el-table-column>
       </el-table>
-      <ApiPagination v-model:page="page" v-model:size="pageSize" :total="total" :loading="loading" @change="load" />
+      <ApiPagination v-model:page="page" v-model:size="pageSize" :total="total" :loading="loading" @change="load" /></LoadingRegion>
     </el-card>
     <el-drawer v-model="drawer" :title="text('采集任务详情', 'Task details')" size="min(900px, 95vw)">
       <template v-if="detail">
+        <el-button :loading="detailLoading" @click="showDetail(detail.jobId, detailPage)">{{ text('刷新详情', 'Refresh details') }}</el-button>
         <p class="job-id">{{ detail.jobId }}</p><p>{{ text('操作者：', 'Actor: ') }}{{ detail.actor }} · {{ label(detail.status) }}</p>
         <el-alert v-if="detail.error" type="error" :closable="false" :title="detail.error" />
         <el-alert v-if="detail.publication === 'preview'" type="info" :closable="false" :title="text('这是预览任务，成功不代表业务数据已更新', 'Preview task: success does not mean business data was updated')" />
-        <el-table :data="detail.chunks.items">
+        <LoadingRegion :loading="detailLoading"><el-table :data="detail.chunks.items">
           <el-table-column :label="text('日期 / 订单', 'Date / order')" min-width="140"><template #default="{row}">{{ row.scope.day || row.scope.order_id }}</template></el-table-column>
           <el-table-column :label="text('状态', 'Status')" min-width="110"><template #default="{row}">{{ label(row.status) }}</template></el-table-column>
           <el-table-column :label="text('获取 / 选中', 'Fetched / selected')" min-width="120"><template #default="{row}">{{ row.counts.fetched ?? '—' }} / {{ row.counts.selected ?? '—' }}</template></el-table-column>
@@ -152,7 +166,7 @@ onBeforeUnmount(() => { disposed = true; clearTimeout(timer) })
           <el-table-column prop="error" :label="text('错误', 'Error')" min-width="170" />
         </el-table>
         <p class="muted">{{ text('计数反映来源记录比较结果，不等同于新增业务订单行数。', 'Counts describe source comparisons, not necessarily new business rows.') }}</p>
-        <ApiPagination v-model:page="detailPage" v-model:size="detailSize" :total="detail.chunks.total" @change="showDetail(detail.jobId, detailPage)" />
+        <ApiPagination v-model:page="detailPage" v-model:size="detailSize" :total="detail.chunks.total" :loading="detailLoading" @change="showDetail(detail.jobId, detailPage)" /></LoadingRegion>
       </template>
     </el-drawer>
   </main>

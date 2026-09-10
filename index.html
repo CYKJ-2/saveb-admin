@@ -4,6 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="SAVEB ERP - 现代化企业管理平台" />
+    <!-- 首次绘制前恢复主题，避免刷新时先显示相反的背景色。 -->
+    <script>
+      (() => {
+        let theme = 'dark'
+        try {
+          if (localStorage.getItem('saveb-theme') === 'light') theme = 'light'
+        } catch { /* 存储不可用时沿用默认深色主题。 */ }
+        document.documentElement.classList.add(theme)
+      })()
+    </script>
+    <style>
+      html { background: #07090d; color-scheme: dark; }
+      html.light { background: #f2f4f7; color-scheme: light; }
+    </style>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>SAVEB ERP</title>
   </head>

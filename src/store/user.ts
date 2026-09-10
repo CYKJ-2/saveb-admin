@@ -14,6 +14,7 @@ import { ref, computed } from 'vue'
 import { request } from '@/utils/request'
 import { resetDynamicRoutes } from '@/router/permission'
 import { useAppStore } from '@/store/app'
+import { isExternalMenu } from '@/utils/external-menu'
 import {
   getToken,
   setToken,
@@ -211,6 +212,7 @@ export const useUserStore = defineStore('user', () => {
   const homePath = computed(() => {
     const firstPage = (nodes: MenuNode[]): string | undefined => {
       for (const node of nodes) {
+        if (isExternalMenu(node.path)) continue
         const child = firstPage((node.children || []) as MenuNode[])
         if (child) return child
         if (node.component && node.component !== 'Layout') return node.path

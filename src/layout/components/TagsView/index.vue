@@ -186,7 +186,7 @@ onBeforeUnmount(() => {
       margin-left: 5px;
       margin-top: 4px;
       border-radius: 4px;
-      transition: all 0.2s;
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 
       &:first-of-type {
         margin-left: 15px;
@@ -201,13 +201,13 @@ onBeforeUnmount(() => {
       }
 
       &.active {
-        background-color: hsl(var(--primary));
-        color: hsl(var(--primary-foreground));
-        border-color: hsl(var(--primary));
+        background-color: var(--tag-active-background, hsl(var(--primary)));
+        color: var(--tag-active-text, hsl(var(--primary-foreground)));
+        border-color: var(--tag-active-border, hsl(var(--primary)));
 
         &::before {
           content: '';
-          background: hsl(var(--primary-foreground));
+          background: var(--tag-active-text, hsl(var(--primary-foreground)));
           display: inline-block;
           width: 8px;
           height: 8px;
@@ -223,7 +223,7 @@ onBeforeUnmount(() => {
 
         &:hover {
           background-color: hsl(0 0% 100% / 0.2);
-          color: hsl(var(--primary-foreground));
+          color: var(--tag-active-text, hsl(var(--primary-foreground)));
         }
       }
     }

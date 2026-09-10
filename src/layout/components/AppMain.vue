@@ -1,9 +1,8 @@
 <template>
   <section class="app-main">
     <router-view v-slot="{ Component, route }">
-      <transition name="fade-transform" mode="out-in">
-        <component :is="Component" :key="route.path" />
-      </transition>
+      <!-- 路由就绪后直接替换内容，避免 out-in 留白及 transform 改变弹层定位。 -->
+      <component :is="Component" :key="route.path" />
     </router-view>
   </section>
 </template>
@@ -18,18 +17,4 @@
   background-color: transparent;
 }
 
-.fade-transform-leave-active,
-.fade-transform-enter-active {
-  transition: all 0.3s;
-}
-
-.fade-transform-enter-from {
-  opacity: 0;
-  transform: translateX(-20px);
-}
-
-.fade-transform-leave-to {
-  opacity: 0;
-  transform: translateX(20px);
-}
 </style>

@@ -1,5 +1,11 @@
 // Field names follow saveb-source #paypal-balance-monitor.
 export default {
+  logs: {
+    title: 'PayPal 操作记录',
+    timezoneHint: '时间按北京时间显示；金额单位为 USD，审核次数除外。',
+    time: '时间', field: '字段', action: '操作', accountName: '账号名', email: '邮箱',
+    previous: '修改前', current: '修改后', delta: '变更量', actor: '修改人',
+  },
   importedWithdrawalRecords: '导入提款记录',
   perPage: '每页条数',
   pagination: '第 {page} / {pages} 页，共 {total} 条',

@@ -21,7 +21,7 @@
       id="app-sidebar"
       class="sidebar-container"
       :class="{ opened: sidebar.opened }"
-      :inert="isMobile && !sidebar.opened"
+      :inert="(isMobile && !sidebar.opened) || undefined"
       :aria-hidden="isMobile && !sidebar.opened"
     >
       <sidebar />
@@ -141,6 +141,7 @@ watch(() => route.path, () => {
   bottom: 0;
   width: var(--layout-sidebar-width);
   background-color: hsl(var(--sidebar));
+  border-right: 1px solid hsl(var(--border));
   overflow: hidden;
   transition: width $transition-duration;
   z-index: $sidebar-z-index;
@@ -174,9 +175,11 @@ watch(() => route.path, () => {
     z-index: $sidebar-z-index + 1;
     transition: transform $transition-duration;
     transform: translateX(-$sideBarWidth);
+    pointer-events: none;
 
     &.opened {
       transform: translateX(0);
+      pointer-events: auto;
     }
   }
 

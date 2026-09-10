@@ -39,6 +39,8 @@ export function applyInvoiceOcr(form: Row, result: Row, before: Row): number {
         for (const key of Object.keys(mapped)) {
           if (current[key] !== previous[key]) mapped[key] = current[key]
         }
+        // 图片由上传或订单详情提供，OCR 重建商品行时必须连同当前附件一起保留。
+        mapped.image = mapped.image_attachment_id ? current.image ?? null : null
       }
       return mapped
     })

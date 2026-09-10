@@ -179,13 +179,12 @@
         <el-tree
           ref="permTreeRef"
           :data="permissionTree"
-          :props="{ label: 'label', children: 'children' }"
+          :props="{ label: permissionLabel, children: 'children' }"
           show-checkbox
           node-key="id"
           default-expand-all
-          check-strictly
+          :check-strictly="false"
           :filter-node-method="filterPermissionNode"
-          :default-checked-keys="checkedKeys"
         >
           <template #default="{ node, data }">
             <span class="perm-tree-node">
@@ -226,8 +225,10 @@ import { Plus, Search, Refresh, InfoFilled } from '@element-plus/icons-vue'
 import { useI18n } from 'vue-i18n'
 import { request } from '@/utils/request'
 import { useUserStore } from '@/store/user'
+import { restorePermissionChecks } from './permission-tree'
+import { permissionName } from '@/utils/permission-name'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const userStore = useUserStore()
 
 function can(code: string): boolean {
@@ -401,8 +402,7 @@ async function loadPermissionTree() {
  * 同时保留菜单节点（type=menu）和按钮级权限点（type=action）。
  * - 菜单节点保留 children 关系（递归）
  * - action 节点是叶子，附带 type 字段供前端打 label tag 使用
- * - 过滤掉 status=0 的节点（已禁用的权限没必要展示）
- * - 顺带把 disabled=1 的节点（system 角色等不可分配的）标记成节点 disabled
+ * - 保留停用节点并提示状态，避免保存角色时静默丢失原有关联。
  */
 function decorate(nodes: any[] | undefined): any[] {
   if (!nodes || !nodes.length) return []
@@ -414,7 +414,7 @@ function decorate(nodes: any[] | undefined): any[] {
         name: n.name,
         name_zh: n.name_zh,
         type: n.type,
-        label: `${n.name_zh || n.name || n.code}${n.status === 1 ? '' : '（已禁用）'}`,
+        status: n.status,
       }
       if (n.type === 'menu') {
         const kids = decorate(n.children)
@@ -424,11 +424,17 @@ function decorate(nodes: any[] | undefined): any[] {
     })
 }
 
+function permissionLabel(data: any): string {
+  const name = permissionName(data, locale.value)
+  return data.status === 1 ? name : `${name} (${t('system.role.field.disabled')})`
+}
+
 function filterPermissionNode(value: string, data: any) {
   if (!value) return true
   const v = value.toLowerCase()
   return (
-    (data.label || '').toLowerCase().includes(v) ||
+    (data.name || '').toLowerCase().includes(v) ||
+    (data.name_zh || '').toLowerCase().includes(v) ||
     (data.code || '').toLowerCase().includes(v)
   )
 }
@@ -451,8 +457,7 @@ async function openPermissions(row: any) {
     checkedKeys.value = Array.isArray(role.permissions) ? role.permissions : []
     permDrawer.visible = true
     await nextTick()
-    // el-tree 在打开抽屉前 mounted，setCheckedKeys 即可
-    permTreeRef.value?.setCheckedKeys(checkedKeys.value, false)
+    if (permTreeRef.value) restorePermissionChecks(permTreeRef.value, permissionTree.value, checkedKeys.value)
   } catch (e) {
     console.error('load role permissions failed', e)
   }

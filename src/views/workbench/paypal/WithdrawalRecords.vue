@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ApiPagination from '@/components/common/ApiPagination.vue'
+import LoadingRegion from '@/components/common/LoadingRegion.vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { workbench, type Row } from '@/api/workbench'
@@ -51,14 +52,14 @@ onMounted(load)
     </form>
     <p v-if="error" class="error" role="alert">{{ localizePageMessage(error) }}</p>
     <p class="muted">{{ t('paypal.withdrawalRecordSummary', { count: result.count, amount: `${money(result.amount)} USD` }) }}</p>
-    <div class="table-wrap"><table>
+    <LoadingRegion :loading="loading"><div class="table-wrap"><table>
       <thead><tr><th v-for="key in ['withdrawalDate', 'paypalAccountName', 'email', 'withdrawalAmount', 'recordSource']" :key="key">{{ t(`paypal.${key}`) }}</th></tr></thead>
       <tbody><tr v-for="row in visible" :key="row.id">
         <td>{{ row.imported ? t('paypal.importedCumulativeWithdrawal') : row.date || '—' }}</td><td :title="row.accountName">{{ accountName(row.accountName) }}</td><td>{{ row.email }}</td>
         <td class="numeric">{{ money(row.amount) }}</td><td>{{ row.imported ? t('paypal.importedCumulativeWithdrawal') : String(row.source || '').startsWith('Imported Withdrawal Sheet ') ? `${t('paypal.importedWithdrawalRecords')} ${row.source.slice(26)}` : row.source || t('paypal.manualWithdrawal') }}</td>
       </tr><tr v-if="!visible.length"><td colspan="5" class="empty">{{ loading ? t('pages.loading2') : t('paypal.noWithdrawalsData') }}</td></tr></tbody>
     </table></div>
-    <ApiPagination v-model:page="page" v-model:size="pageSize" :total="result.count" :loading="loading" @change="load" />
+    <ApiPagination v-model:page="page" v-model:size="pageSize" :total="result.count" :loading="loading" @change="load" /></LoadingRegion>
   </section>
 </template>
 

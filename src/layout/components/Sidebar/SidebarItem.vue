@@ -1,7 +1,8 @@
 <template>
   <!-- 菜单项直接挂在 el-menu 下，收起时由 Element Plus 隐藏标题并显示浮层。 -->
   <template v-if="!item.meta?.hidden">
-    <el-menu-item v-if="isLeaf" :index="resolvePath(singleItem.path)" :aria-label="singleTitle">
+    <external-menu-item v-if="isLeaf && isExternalMenu(singleItem.path)" :href="singleItem.path" :title="singleTitle" :icon="singleIcon" />
+    <el-menu-item v-else-if="isLeaf" :index="resolvePath(singleItem.path)" :aria-label="singleTitle">
       <el-icon class="sidebar-menu-icon" :size="20" aria-hidden="true">
         <component :is="singleIcon" />
       </el-icon>
@@ -39,6 +40,8 @@ import { computed } from 'vue'
 import type { RouteRecordRaw } from 'vue-router'
 import { useNavigationTitle } from '@/hooks/useNavigationTitle'
 import { resolveMenuIcon } from './menu-icons'
+import { isExternalMenu } from '@/utils/external-menu'
+import ExternalMenuItem from './ExternalMenuItem.vue'
 
 const props = defineProps<{
   item: RouteRecordRaw
@@ -60,7 +63,7 @@ const groupIcon = computed(() => resolveMenuIcon(props.item.meta?.icon, props.it
 const singleIcon = computed(() => resolveMenuIcon(singleItem.value.meta?.icon, singleItem.value.meta?.requiresPermission))
 
 function resolvePath(path: string): string {
-  if (path.startsWith('/') || path.startsWith('http')) return path
+  if (path.startsWith('/') || isExternalMenu(path)) return path
   return `${props.basePath}/${path}`.replace(/\/+/g, '/')
 }
 </script>

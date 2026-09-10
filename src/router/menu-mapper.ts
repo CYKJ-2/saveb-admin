@@ -24,6 +24,7 @@ const componentsMap: Record<string, () => Promise<Component>> = {
   'system/PermissionList': () => import('@/views/system/permission/index.vue'),
 
   // ─── Business ───
+  'workbench/analysis/index': () => import('@/views/workbench/analysis/index.vue'),
   'business/OrderList': () => import('@/views/business/order/index.vue'),
   'business/InvoiceList': () => import('@/views/business/invoice/index.vue'),
   'business/ProcurementList': () => import('@/views/business/procurement/index.vue'),

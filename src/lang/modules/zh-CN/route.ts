@@ -1,5 +1,7 @@
 // zh-CN 路由模块 (用于菜单 / 面包屑 / 标签页)
 export default {
+  'workbench-analysis': 'Analysis 分析',
+  inspection: '验货系统',
   'collector-management': '采集管理',
   'workbench': '业务管理',
   'workbench-invoice': 'Invoice 订单',

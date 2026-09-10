@@ -65,7 +65,7 @@
     >
       <el-table-column :label="t('system.permission.field.name')" min-width="240">
         <template #default="{ row }">
-          <span>{{ row.name_zh || row.name || row.code }}</span>
+          <span>{{ permissionName(row, locale) }}</span>
           <el-tag v-if="row.type === 'action'" size="small" type="success" style="margin-left: 8px">
             {{ t('system.permission.field.actionNode') }}
           </el-tag>
@@ -135,7 +135,7 @@
             {{ t('system.permission.addChild') }}
           </el-button>
           <el-popconfirm
-            :title="t('system.permission.confirmDelete', { name: row.name_zh || row.name || row.code })"
+            :title="t('system.permission.confirmDelete', { name: permissionName(row, locale) })"
             @confirm="handleDelete(row)"
           >
             <template #reference>
@@ -239,8 +239,9 @@ import { Plus, Search, Refresh } from '@element-plus/icons-vue'
 import { useI18n } from 'vue-i18n'
 import { request } from '@/utils/request'
 import { useUserStore } from '@/store/user'
+import { permissionName } from '@/utils/permission-name'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const userStore = useUserStore()
 
 /** 当前登录用户是否有指定权限 code。super_admin 直接通过。 */
@@ -456,7 +457,7 @@ function openCreateChild(parent: PermissionNode) {
   resetForm()
   formDrawer.id = null
   formDrawer.parentId = parent.id
-  formDrawer.parentName = parent.name_zh || parent.name || parent.code
+  formDrawer.parentName = permissionName(parent, locale.value)
   form.parent_id = parent.id
   // 子节点的 type 默认与父相同
   form.type = parent.type

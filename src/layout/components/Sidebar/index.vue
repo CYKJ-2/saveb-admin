@@ -171,7 +171,7 @@ function toSidebarItem(m: any): any {
     font-size: 15px;
     font-weight: 700;
     /* 跟随主题：深色浅色都给对比度足够的字色 */
-    color: hsl(var(--sidebar-text-active));
+    color: hsl(var(--sidebar-logo-text, var(--sidebar-text-active)));
     letter-spacing: 0.5px;
     white-space: nowrap;
     user-select: none;

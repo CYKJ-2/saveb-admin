@@ -1,5 +1,16 @@
 // Migrated pages; terminology follows saveb-source. Keep keys aligned across locales.
 export default {
+  "invoiceLogs": {
+    "operationTime": "Operation Time",
+    "operator": "Operator",
+    "actionLabel": "Action",
+    "orderNumber": "Order Number",
+    "customer": "Customer",
+    "changedFields": "Changed Fields",
+    "details": "Details",
+    "recordId": "Record ID",
+    "timezoneHint": "Times use Beijing time (UTC+8). Columns match the export."
+  },
   logisticsRefresh: 'Refresh tracking',
   logisticsRefreshing: 'Tracking query in progress',
   logisticsNotConfigured: 'Tracking is not configured. Contact an administrator to enable AfterShip or Kuaidi100.',
@@ -13,6 +24,16 @@ export default {
   logisticsPending: 'Pending', logisticsInTransit: 'In transit', logisticsOutForDelivery: 'Out for delivery',
   logisticsDelivered: 'Delivered', logisticsException: 'Exception', logisticsExpired: 'Expired', logisticsUnknown: 'No tracking status',
   logisticsLastChecked: 'Last checked:', logisticsQueryError: 'Query failed', logisticsQueryOne: 'Query shipment',
+  "orderOffline": {
+    "title": "Offline Orders", "staff": "Staff", "orders": "Orders", "items": "Items", "sales": "Sales",
+    "daily": "Daily", "monthly": "Monthly", "date": "Offline orders daily filter", "month": "Offline orders monthly filter"
+  },
+  "orderQueryTimeRange": "Date range",
+  "recentOrderFilters": {
+    "completed": "Today Completed Orders",
+    "pending": "Today Pending Orders",
+    "testing": "Today Testing Orders"
+  },
   "orderTable": {
     "orderTime": "Order Time",
     "orderId": "Order ID",

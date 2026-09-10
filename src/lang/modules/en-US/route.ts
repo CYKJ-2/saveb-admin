@@ -1,5 +1,7 @@
 // en-US route module (used by menu / breadcrumb / tags view)
 export default {
+  'workbench-analysis': 'Analysis',
+  inspection: 'Inspection Photo System',
   'collector-management': 'Collection management',
   'workbench': 'Business Management',
   'workbench-invoice': 'Invoice Orders',

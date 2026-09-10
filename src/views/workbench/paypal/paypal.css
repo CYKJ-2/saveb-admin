@@ -3,11 +3,14 @@
 .paypal-monitor .account-toolbar { gap: 8px; }
 .paypal-monitor .account-toolbar button { white-space: nowrap; }
 .paypal-monitor .balance-help { font-size: 12px; }
+/* 本页各列表统一左对齐，避免数字列与表头方向不同；空状态继续居中。 */
+.paypal-monitor .table-wrap th,
+.paypal-monitor .table-wrap td:not(.empty) { text-align: left; }
 .paypal-monitor .accounts-table { table-layout: fixed; min-width: 1080px; }
 .paypal-monitor .accounts-table td { vertical-align: middle; }
 .paypal-monitor .accounts-table th { white-space: normal; }
 .paypal-monitor .accounts-table td:first-child { font-size: 12px; }
-.paypal-monitor .accounts-table .numeric input { width: 100%; min-width: 75px; padding: 7px; text-align: right; font-variant-numeric: tabular-nums; }
+.paypal-monitor .accounts-table .numeric input { width: 100%; min-width: 75px; padding: 7px; text-align: left; font-variant-numeric: tabular-nums; }
 .paypal-monitor .accounts-table input[readonly]:not(:disabled) { cursor: pointer; }
 .paypal-monitor .accounts-table input.above-threshold { color: var(--workbench-amber); }
 .paypal-monitor .accounts-table .received-link { border: 0; padding: 7px 0; background: transparent; color: var(--blue); text-decoration: underline; font-variant-numeric: tabular-nums; }

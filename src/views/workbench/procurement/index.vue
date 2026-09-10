@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ApiPagination from '@/components/common/ApiPagination.vue'
+import LoadingRegion from '@/components/common/LoadingRegion.vue'
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { workbench, type Row } from '@/api/workbench'
@@ -11,6 +12,8 @@ import '../shared/legacy.css'
 const { t } = useI18n()
 const { businessLabel } = useBusinessLocale()
 const { can, loading, error, run } = useWorkbench('procurement')
+const { loading: sourceLoading, error: sourceError, run: runSource } = useWorkbench('procurement')
+const { loading: logsLoading, error: logsError, run: runLogs } = useWorkbench('procurement')
 const labels = computed<Row>(() => ({
   pending_purchase: t('pages.pendingPurchase'),
   supplier_shipping_pending: t('pages.waitingSupplierShipment'),
@@ -151,7 +154,7 @@ function createTask() {
 }
 
 function loadSourceOrders() {
-  return run(() => workbench.get('/procurement', { ...sourceFilters, keyword: sourceKeyword.value }), (result) => {
+  return runSource(() => workbench.get('/procurement', { ...sourceFilters, keyword: sourceKeyword.value }), (result) => {
     sourceRows.value = result.list
     sourceFilters.page = result.page
     sourceTotal.value = result.total
@@ -193,7 +196,7 @@ async function remove(row: Row) {
 }
 
 function loadLogs() {
-  run(() => workbench.get('/procurement/logs', { page: logPage.value, per_page: logSize.value }), data => { logs.value = data.data; logTotal.value = data.total })
+  runLogs(() => workbench.get('/procurement/logs', { page: logPage.value, per_page: logSize.value }), data => { logs.value = data.data; logTotal.value = data.total })
 }
 function showLogs() {
   logPage.value = 1
@@ -264,7 +267,7 @@ onUnmounted(() => { disposed = true; if (logisticsTimer) clearTimeout(logisticsT
         <button class="primary" :disabled="loading">{{ t('pages.search2') }}</button>
         <button type="button" @click="Object.assign(filters, { keyword: '', status: '', startDate: '', endDate: '' }); search()">{{ t('pages.clear') }}</button>
       </form>
-      <div v-if="can('list')" class="table-wrap">
+      <LoadingRegion :loading="loading"><div v-if="can('list')" class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -320,7 +323,7 @@ onUnmounted(() => { disposed = true; if (logisticsTimer) clearTimeout(logisticsT
         </table>
         <p v-if="!rows.length" class="empty">{{ loading ? t('pages.loading2') : t('pages.noMatchingProcurementTasks') }}</p>
       </div>
-      <ApiPagination v-model:page="filters.page" v-model:size="filters.per_page" :total="total" :loading="loading" @change="load" />
+      <ApiPagination v-model:page="filters.page" v-model:size="filters.per_page" :total="total" :loading="loading" @change="load" /></LoadingRegion>
     </section>
     <div v-if="editing" class="editor" role="dialog" aria-modal="true" :aria-label="t('pages.procurementTask')">
       <form class="editor-content" @submit.prevent="save">
@@ -339,17 +342,17 @@ onUnmounted(() => { disposed = true; if (logisticsTimer) clearTimeout(logisticsT
                 {{ t('pages.search') }}
                 <input v-model="sourceFilters.keyword" type="search" :placeholder="t('pages.orderCustomerProductOrSupplier')" @keydown.enter.prevent="searchSourceOrders" />
               </label>
-              <button type="button" :disabled="loading" @click="searchSourceOrders">{{ t('pages.search2') }}</button>
+              <button type="button" :disabled="sourceLoading" @click="searchSourceOrders">{{ t('pages.search2') }}</button>
             </div>
-            <label>
+            <p v-if="sourceError" class="error" role="alert">{{ localizePageMessage(sourceError) }}</p><LoadingRegion :loading="sourceLoading"><label>
               {{ t('pages.procurementSelectOrder') }}
-              <select :value="editing.sourceKey" required :disabled="loading" @change="selectSourceOrder">
+              <select :value="editing.sourceKey" required :disabled="sourceLoading" @change="selectSourceOrder">
                 <option value="">{{ t('pages.procurementSelectOrder') }}</option>
                 <option v-for="order in availableOrders" :key="order.sourceKey" :value="order.sourceKey">{{ order.orderId }} · {{ order.productName }}</option>
               </select>
             </label>
-            <p v-if="!availableOrders.length && !loading" class="muted">{{ t('pages.noMatchingProcurementTasks') }}</p>
-            <ApiPagination v-model:page="sourceFilters.page" v-model:size="sourceFilters.per_page" :total="sourceTotal" :loading="loading" @change="loadSourceOrders" />
+            <p v-if="!availableOrders.length && !sourceLoading" class="muted">{{ t('pages.noMatchingProcurementTasks') }}</p>
+            <ApiPagination v-model:page="sourceFilters.page" v-model:size="sourceFilters.per_page" :total="sourceTotal" :loading="sourceLoading" @change="loadSourceOrders" /></LoadingRegion>
           </section>
           <section class="wide panel procurement-products" :aria-label="t('pages.procurementItems')">
             <h3>{{ t('pages.procurementItems') }}</h3>
@@ -418,7 +421,7 @@ onUnmounted(() => { disposed = true; if (logisticsTimer) clearTimeout(logisticsT
           <button @click="logs = null">{{ t('pages.close') }}</button>
         </header>
         <button v-if="can('export')" @click="workbench.download('/procurement/logs/export', t('pages.procurementLogsCsv'))">{{ t('pages.exportAllLogs') }}</button>
-        <div class="table-wrap">
+        <p v-if="logsError" class="error" role="alert">{{ localizePageMessage(logsError) }}</p><LoadingRegion :loading="logsLoading"><div class="table-wrap">
           <table>
             <thead>
               <tr>
@@ -433,12 +436,12 @@ onUnmounted(() => { disposed = true; if (logisticsTimer) clearTimeout(logisticsT
                 <td>{{ log.created_at }}</td>
                 <td>{{ businessLabel(log.action) }}</td>
                 <td>{{ log.entity_id }}</td>
-                <td>{{ log.actor_user_id }}</td>
+                <td>{{ log.operator || '—' }}</td>
               </tr>
             </tbody>
           </table>
         </div>
-      <ApiPagination v-model:page="logPage" v-model:size="logSize" :total="logTotal" :loading="loading" @change="loadLogs" />
+      <ApiPagination v-model:page="logPage" v-model:size="logSize" :total="logTotal" :loading="logsLoading" @change="loadLogs" /></LoadingRegion>
       </section>
     </div>
   </main>

@@ -1,5 +1,11 @@
 // Field names follow saveb-source #paypal-balance-monitor.
 export default {
+  logs: {
+    title: 'PayPal Operation Logs',
+    timezoneHint: 'Times are shown in Beijing time. Amounts are in USD, except review counts.',
+    time: 'Time', field: 'Field', action: 'Action', accountName: 'Account Name', email: 'Email',
+    previous: 'Previous Value', current: 'New Value', delta: 'Delta', actor: 'Updated By',
+  },
   importedWithdrawalRecords: 'Imported Withdrawal Records',
   perPage: 'Rows per page',
   pagination: 'Page {page} / {pages}, {total} records',

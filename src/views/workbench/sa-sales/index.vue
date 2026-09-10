@@ -26,6 +26,10 @@ const detailInitialRange = ref<{ startDate: string; endDate: string } | null>(nu
 const displayMoney = (value: unknown) => usd(value, locale.value)
 const sourceLabels: Record<string, string> = { 'Top Influencers': 'top_influencer', 'Mid Influencers': 'mid_influencer', 'Official Sites': 'official', 'Offline Orders': 'offline', 'Unmatched': 'unmatched' }
 const label = (value: string) => locale.value === 'en-US' && sourceLabels[value] ? value : businessLabel(sourceLabels[value] || value)
+const selectedMonth = computed(() => {
+  const date = dayjs(start.value)
+  return date.isValid() ? new Intl.DateTimeFormat(locale.value, { year: 'numeric', month: 'long' }).format(date.toDate()) : '—'
+})
 const nextMonthDisabled = computed(() => !!bounds.value.dataThrough && dayjs(start.value).add(1, 'month').startOf('month').format('YYYY-MM-DD') > bounds.value.dataThrough)
 const previousMonthDisabled = computed(() => !!bounds.value.firstDate && dayjs(start.value).subtract(1, 'month').endOf('month').format('YYYY-MM-DD') < bounds.value.firstDate)
 
@@ -65,8 +69,11 @@ onMounted(async () => {
     <p v-if="error" class="error" role="alert">{{ localizePageMessage(error) }}</p>
     <section v-if="can('list')" class="panel">
       <form class="toolbar" @submit.prevent="load">
-        <button type="button" :disabled="loading || previousMonthDisabled" @click="shift(-1)">{{ t('pages.lastMonth') }}</button>
-        <button type="button" :disabled="loading || nextMonthDisabled" @click="shift(1)">{{ t('pages.nextMonth') }}</button>
+        <div class="month-navigation">
+          <button type="button" :disabled="loading || previousMonthDisabled" @click="shift(-1)">{{ t('pages.lastMonth') }}</button>
+          <span class="selected-month" aria-live="polite">{{ selectedMonth }}</span>
+          <button type="button" :disabled="loading || nextMonthDisabled" @click="shift(1)">{{ t('pages.nextMonth') }}</button>
+        </div>
         <button type="button" :disabled="loading" @click="quick('month')">{{ t('pages.saThisMonth') }}</button>
         <button type="button" :disabled="loading" @click="quick('last')">{{ t('pages.lastMonth2') }}</button>
         <button type="button" :disabled="loading" @click="quick('week')">{{ t('pages.thisWeek') }}</button>
@@ -100,7 +107,7 @@ onMounted(async () => {
           <p v-if="!report.channels.length" class="empty">{{ t('pages.saNoData') }}</p>
         </section>
       </div>
-      <EmployeeRanking :title="t('pages.saInvoiceRanking')" :rows="report.invoiceSales.employees" :label="label" />
+      <EmployeeRanking class="invoice-ranking" :title="t('pages.saInvoiceRanking')" :rows="report.invoiceSales.employees" :label="label" />
       <div class="charts">
         <SalesTrend :rows="report.daily" />
         <EmployeeComparison :rows="report.employees" :label="label" />
@@ -122,6 +129,10 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.month-navigation { display: flex; align-items: center; gap: 10px; max-width: 100%; }
+.month-navigation button { white-space: nowrap; }
+.selected-month { min-width: 130px; text-align: center; font-weight: 600; white-space: nowrap; }
+.invoice-ranking :deep(th), .invoice-ranking :deep(td) { text-align: left; }
 .metrics { grid-template-columns: repeat(7, minmax(0, 1fr)); }
 .metrics .card b { font-size: 23px; overflow-wrap: anywhere; }
 .ranking-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr); gap: 18px; }
@@ -135,6 +146,11 @@ onMounted(async () => {
 summary { cursor: pointer; font-weight: 600; }
 @media (max-width: 1450px) { .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); } .ranking-grid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 1250px) { .charts { grid-template-columns: minmax(0, 1fr); } }
-@media (max-width: 600px) { .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) {
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .month-navigation { flex-wrap: wrap; justify-content: center; }
+  .month-navigation button { padding: 8px 6px; font-size: 12px; }
+  .selected-month { min-width: 0; font-size: 12px; }
+}
 @media (max-width: 400px) { .channel-cards { grid-template-columns: minmax(0, 1fr); } }
 </style>

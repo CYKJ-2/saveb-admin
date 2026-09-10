@@ -18,6 +18,7 @@ import router from './index'
 import Layout from '@/layout/index.vue'
 import type { PermissionNode } from '@/utils/auth'
 import { resolveComponent } from './menu-mapper'
+import { isExternalMenu } from '@/utils/external-menu'
 
 interface BuildResult {
   routes: RouteRecordRaw[]
@@ -37,7 +38,7 @@ export function buildAsyncRoutesFromTree(
   const result: RouteRecordRaw[] = []
 
   for (const rootNode of tree) {
-    if (rootNode.type !== 'menu' || rootNode.status !== 1) continue
+    if (rootNode.type !== 'menu' || rootNode.status !== 1 || isExternalMenu(rootNode.path)) continue
 
     const moduleRoute: RouteRecordRaw = {
       // 后端 path 是 /system 这种顶层前缀；router 需要绝对路径
@@ -96,7 +97,7 @@ function attachChildren(
   nodes: PermissionNode[],
 ): void {
   for (const n of nodes) {
-    if (n.type === 'action' || n.status !== 1) continue // 按钮级权限不进路由
+    if (n.type === 'action' || n.status !== 1 || isExternalMenu(n.path)) continue // 操作权限和外链不进站内路由
 
     if (n.type === 'menu') {
       // 子路由 path 优先用相对路径（这样父级 redirect 才能正常工作）

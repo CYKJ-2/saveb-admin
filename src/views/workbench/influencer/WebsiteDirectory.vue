@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import ApiPagination from '@/components/common/ApiPagination.vue'
+import LoadingRegion from '@/components/common/LoadingRegion.vue'
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { workbench } from '@/api/workbench'
 import { localizePageMessage } from '@/lang/page-message'
 import { useWorkbench } from '../shared/useWorkbench'
+import { useDebouncedReload } from '../shared/useDebouncedReload'
 import AddWebsiteDialog from './AddWebsiteDialog.vue'
 import type { InfluencerDirectory } from './types'
 const props = defineProps<{ refresh: number }>()
@@ -21,12 +23,14 @@ const error = ref('')
 const editing = ref(false)
 const notice = ref<{ added: boolean; domain: string; influencer_name: string } | null>(null)
 let revision = 0
+const searchReload = useDebouncedReload(() => { page.value = 1; load() })
 const pageRows = computed(() => directory.value)
 const domainCount = computed(() => summary.value.websites)
 const updatedAt = computed(() => summary.value.updatedAt)
 const sourceDate = computed(() => updatedAt.value ? new Date(updatedAt.value).toLocaleString(locale.value, { timeZone: 'Asia/Shanghai' }) : '—')
 const tierKey = (tier: string) => tier === 'top' ? 'creatorRelationshipTop' : tier === 'mid' ? 'creatorRelationshipMid' : 'creatorRelationshipUnknown'
 async function load() {
+  searchReload.cancel()
   const current = ++revision
   loading.value = true
   error.value = ''
@@ -47,7 +51,7 @@ function saved(result: { added: boolean; domain: string; influencer_name: string
   notice.value = result
   emit('saved')
 }
-watch(search, () => { page.value = 1; load() })
+watch(search, () => { page.value = 1; revision++; searchReload.schedule() })
 watch(() => props.refresh, load, { immediate: true })
 onBeforeUnmount(() => { revision++ })
 </script>
@@ -65,14 +69,11 @@ onBeforeUnmount(() => { revision++ })
     </div>
     <p v-if="notice" class="creator-notice" role="status">{{ t(`influencer.${notice.added ? 'creatorRelationshipAdded' : 'creatorRelationshipAlreadyExists'}`, { domain: notice.domain, influencer: notice.influencer_name }) }}</p>
     <div v-if="error" class="error" role="alert">{{ localizePageMessage(error) }} <button @click="load">{{ t('pages.refresh') }}</button></div>
-    <div v-if="loading" class="empty" role="status">{{ t('influencer.loading') }}</div>
-    <template v-else>
-      <div class="table-wrap"><table>
+    <LoadingRegion :loading="loading"><div class="table-wrap"><table>
         <thead><tr><th>{{ t('influencer.creatorSalesInfluencer') }}</th><th>{{ t('influencer.creatorRelationshipTier') }}</th><th class="numeric">{{ t('influencer.creatorRelationshipWebsiteCount') }}</th><th>{{ t('influencer.creatorRelationshipWebsiteList') }}</th></tr></thead>
         <tbody><tr v-for="row in pageRows" :key="row.name"><td><strong>{{ row.name }}</strong></td><td><span class="creator-tier" :class="row.tier">{{ t(`influencer.${tierKey(row.tier)}`) }}</span></td><td class="numeric">{{ row.domains.length }}</td><td><div class="creator-websites"><a v-for="item in row.domains" :key="item.domain" :href="`https://${item.domain}`" target="_blank" rel="noopener noreferrer">{{ item.domain }}</a></div></td></tr><tr v-if="!pageRows.length"><td colspan="4" class="empty">{{ t('influencer.creatorRelationshipNoResults') }}</td></tr></tbody>
       </table></div>
-      <ApiPagination v-model:page="page" v-model:size="size" :total="total" :loading="loading" @change="load" />
-    </template>
+      <ApiPagination v-model:page="page" v-model:size="size" :total="total" :loading="loading" @change="load" /></LoadingRegion>
     <AddWebsiteDialog v-if="editing" @close="editing = false" @saved="saved" />
   </section>
 </template>
@@ -83,8 +84,24 @@ onBeforeUnmount(() => { revision++ })
 .creator-directory-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; }
 .creator-websites { display: flex; flex-wrap: wrap; gap: 6px; min-width: 300px; }
 .creator-websites a { padding: 3px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel-2); text-decoration: none; }
-.creator-tier { display: inline-block; border-radius: 20px; padding: 3px 10px; background: var(--panel-2); color: var(--muted); white-space: nowrap; }
-.creator-tier.top { background: var(--workbench-action-background); color: var(--workbench-green); }
-.creator-tier.mid { background: var(--workbench-button-background); color: var(--blue); }
+.creator-tier {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 10px;
+  background: var(--creator-tier-background, var(--panel-2));
+  color: var(--creator-tier-text, var(--muted));
+  box-shadow: inset 0 0 0 1px var(--creator-tier-border, transparent);
+  white-space: nowrap;
+}
+.creator-tier.top {
+  background: var(--creator-tier-top-background, var(--workbench-action-background));
+  color: var(--creator-tier-top-text, var(--workbench-green));
+  box-shadow: inset 0 0 0 1px var(--creator-tier-top-border, transparent);
+}
+.creator-tier.mid {
+  background: var(--creator-tier-mid-background, var(--workbench-button-background));
+  color: var(--creator-tier-mid-text, var(--blue));
+  box-shadow: inset 0 0 0 1px var(--creator-tier-mid-border, transparent);
+}
 .creator-notice { color: var(--workbench-green); }
 </style>

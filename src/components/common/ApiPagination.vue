@@ -47,6 +47,15 @@ function change(page: number, size = props.size) {
 .api-pagination label { display:flex; align-items:center; gap:6px; font:inherit; color:inherit; }
 .api-pagination button,.api-pagination select,.api-pagination input,.api-pagination .current-page { box-sizing:border-box; height:30px; border:1px solid var(--workbench-control-border,hsl(var(--border))); border-radius:6px; padding:4px 8px; font:inherit; color:var(--workbench-button-text,hsl(var(--foreground))); background:var(--workbench-button-background,hsl(var(--background))); }
 .api-pagination input { width:64px; }.api-pagination select { min-width:58px; }
+/* 原生下拉弹出层需要不透明背景，避免深色主题的浅色文字叠在系统浅色菜单上。 */
+.api-pagination select option {
+  color: var(--workbench-text, hsl(var(--foreground)));
+  background-color: var(--workbench-input, hsl(var(--background)));
+}
+.api-pagination select option:checked {
+  color: hsl(var(--primary-foreground));
+  background-color: hsl(var(--primary));
+}
 .api-pagination button { cursor:pointer; }.api-pagination button:hover:not(:disabled) { background:var(--workbench-button-hover,hsl(var(--accent))); }
 .api-pagination :disabled { opacity:.45; cursor:not-allowed; }.api-pagination .current-page { display:flex; align-items:center; border-color:var(--workbench-blue,#3b82f6); }
 .api-pagination :focus-visible { outline:2px solid #3b82f6; outline-offset:2px; }

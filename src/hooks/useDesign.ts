@@ -37,9 +37,12 @@ function observeTheme() {
 }
 
 export function useDesign(scope?: string) {
+  let stopObserving: (() => void) | undefined
   onMounted(() => {
-    observeTheme()
+    currentTheme.value = readInitialTheme()
+    stopObserving = observeTheme()
   })
+  onBeforeUnmount(() => stopObserving?.())
 
   // 组件 class 前缀：saveb + scope（可选）
   function getPrefixCls(block: string, def?: string) {

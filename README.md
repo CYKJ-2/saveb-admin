@@ -1,6 +1,6 @@
 # SAVEB ERP Admin
 
-生产发布和回滚见 [自动发布说明](AUTODEPLOY.md)：推送 main 后由 GitHub Actions 构建 GHCR 镜像，服务器通过 Docker Compose 更新；首次需完成服务器和 GitHub 配置。
+服务器自动发布见 [AUTODEPLOY.md](AUTODEPLOY.md)：本地 push main → GitHub 云端测试/构建 → GHCR → 内网 runner 拉镜像部署和健康检查。首次数据迁移及固定端口见 [SERVER-DEPLOY.md](SERVER-DEPLOY.md)。真实 .env、nginx.conf 和业务数据由服务器独立维护。
 
 上传 GitHub 时提交源码和依赖锁文件；`node_modules/`、`dist/`、IDE 配置、日志和私有环境文件已由 `.gitignore` 排除。克隆后执行 `npm ci` 安装依赖，`npm run dev` 启动本地开发，`npm run build` 重新生成部署文件。页面入口为项目根目录 `index.html`。
 

@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import ApiPagination from '@/components/common/ApiPagination.vue'
-import { computed, onActivated, onDeactivated, onMounted, onUnmounted, ref, watch } from 'vue'
+import LoadingRegion from '@/components/common/LoadingRegion.vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { ElMessageBox } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { workbench, type Row } from '@/api/workbench'
 import { localizePageMessage } from '@/lang/page-message'
 import { useWorkbench, money } from '../shared/useWorkbench'
+import { useDebouncedReload } from '../shared/useDebouncedReload'
 import AccountDialog from './AccountDialog.vue'
 import ReceivedOrders from './ReceivedOrders.vue'
 import WithdrawalRecords from './WithdrawalRecords.vue'
 import WithdrawalChart from './WithdrawalChart.vue'
+import PaypalOperationLogs from './PaypalOperationLogs.vue'
 import { accountName, suggestedThreshold } from './account'
 import { useBalanceNotifications } from './useBalanceNotifications'
 import '../shared/legacy.css'
 import './paypal.css'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const { can, loading, error, run } = useWorkbench('paypal')
 const notifications = useBalanceNotifications()
 const rows = ref<Row[]>([])
@@ -31,8 +34,7 @@ const editor = ref<{ action: string; account?: Row } | null>(null)
 const selectedAccount = ref<Row | null>(null)
 const revision = ref(0)
 const savingReview = ref(false)
-let timer: ReturnType<typeof setInterval> | undefined
-let active = true
+const showLogs = ref(false)
 
 const sorts = [
   ['latestIncomingAt', 'sortRecentIncoming'], ['received', 'sortTotalReceived'],
@@ -41,9 +43,13 @@ const sorts = [
 const visible = computed(() => rows.value)
 const totalBalance = computed(() => summary.value.balance)
 const dangerCount = computed(() => summary.value.aboveThreshold)
-watch([keyword, sort, threshold], () => { page.value = 1; load() })
+const searchReload = useDebouncedReload(() => { page.value = 1; load() })
+watch([keyword, threshold], () => { page.value = 1; loadVersion++; searchReload.schedule() })
+watch(sort, () => { page.value = 1; load() })
+onBeforeUnmount(() => { loadVersion++ })
 
 async function load() {
+  searchReload.cancel()
   if (!can('list') || savingReview.value) return
   const version = ++loadVersion
   await run(() => workbench.get('/paypal', { keyword: keyword.value, sort: sort.value, threshold: Math.max(0, Number(threshold.value) || 0), page: page.value, per_page: pageSize.value }), data => {
@@ -82,21 +88,7 @@ async function changeReviews(row: Row, event: Event) {
   await load()
   if (saveError) error.value = saveError
 }
-async function downloadLogs() {
-  await run(() => workbench.download('/paypal/logs/export', 'paypal-change-log.csv', { locale: locale.value }), () => {})
-}
-function startPolling() {
-  active = true
-  if (timer) return
-  timer = setInterval(() => {
-    if (active && !document.hidden && !editor.value && !savingReview.value) { load(); notifications.refresh() }
-  }, 60_000)
-}
-function stopPolling() { active = false; if (timer) clearInterval(timer); timer = undefined }
-onMounted(() => { load(); notifications.refresh(); startPolling() })
-onActivated(startPolling)
-onDeactivated(stopPolling)
-onUnmounted(stopPolling)
+onMounted(() => { load(); notifications.refresh() })
 </script>
 
 <template>
@@ -116,13 +108,13 @@ onUnmounted(stopPolling)
           <button @click="keyword = ''">{{ t('paypal.clearForm') }}</button>
           <button v-if="can('create')" class="primary" :disabled="loading" @click="editor = { action: 'create' }">{{ t('paypal.addPaypalAccount') }}</button>
           <button :disabled="notifications.enabled.value" @click="notifications.enable()">{{ t(notifications.enabled.value ? 'paypal.desktopNotificationsEnabled' : 'paypal.enableDesktopNotifications') }}</button>
-          <button v-if="can('logs')" :disabled="loading" @click="downloadLogs">{{ t('paypal.downloadChangeLog') }}</button>
+          <button v-if="can('logs')" @click="showLogs = true">{{ t('pages.operationLogs') }}</button>
           <label>{{ t('paypal.sortBy') }}<select v-model="sort"><option v-for="[value, key] in sorts" :key="value" :value="value">{{ t(`paypal.${key}`) }}</option></select></label>
           <label class="threshold-input">{{ t('pages.balanceAlertThresholdUsd') }}<input v-model.number="threshold" type="number" min="0" step="100" /></label>
           <button :disabled="loading || savingReview" @click="load(); revision++">{{ t('pages.refresh') }}</button>
         </div>
         <p v-if="can('balance') || can('withdrawal')" class="muted balance-help">{{ t('paypal.balanceHelp') }}</p>
-        <div class="table-wrap"><table class="accounts-table" :aria-busy="loading">
+        <LoadingRegion :loading="loading"><div class="table-wrap"><table class="accounts-table" :aria-busy="loading">
           <colgroup><col style="width: 9%" /><col style="width: 24%" /><col style="width: 25%" /><col span="4" style="width: 10.5%" /></colgroup>
           <thead><tr><th v-for="key in ['addedDate', 'paypalAccountName', 'email', 'numberOfReviews', 'balance', 'totalReceived', 'totalWithdrawed']" :key="key">{{ t(`paypal.${key}`) }}</th></tr></thead>
           <tbody>
@@ -136,7 +128,7 @@ onUnmounted(stopPolling)
             <tr v-if="!visible.length"><td colspan="7" class="empty">{{ loading ? t('paypal.loadingPaypalAccounts') : t('pages.noMatchingAccounts') }}</td></tr>
           </tbody>
         </table></div>
-        <ApiPagination v-model:page="page" v-model:size="pageSize" :total="total" :loading="loading" @change="load" />
+        <ApiPagination v-model:page="page" v-model:size="pageSize" :total="total" :loading="loading" @change="load" /></LoadingRegion>
       </section>
     </template>
     <p v-else class="empty">{{ t('paypal.noPermission') }}</p>
@@ -144,5 +136,6 @@ onUnmounted(stopPolling)
     <WithdrawalRecords v-if="can('withdrawals')" :revision="revision" />
     <WithdrawalChart v-if="can('statistics')" :revision="revision" />
     <AccountDialog v-if="editor" :action="editor.action" :account="editor.account" @close="editor = null" @saved="saved" />
+    <PaypalOperationLogs v-if="showLogs && can('logs')" @close="showLogs = false" />
   </main>
 </template>

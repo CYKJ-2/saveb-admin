@@ -197,13 +197,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/*
- * 主题切换圆形扩散动画已迁移到 ThemeToggle.vue 组件内的覆盖层实现。
- * 因为方向不同（亮→暗：按钮扩散；暗→亮：左下角收缩），
- * 使用 Vue transition + 单个覆盖层 div 比 View Transitions API 更灵活。
- *
- * 保留此处注释仅为说明：全局 view-transition 不再被触发，避免影响其他页面过渡。
- */
+/* 主题仅切换颜色；颜色过渡集中在 theme-motion.css，不创建全屏覆盖层。 */
 
 body {
   height: 100%;

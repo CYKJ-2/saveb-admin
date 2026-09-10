@@ -1,5 +1,16 @@
 // Migrated pages; terminology follows saveb-source. Keep keys aligned across locales.
 export default {
+  "invoiceLogs": {
+    "operationTime": "操作时间",
+    "operator": "操作人",
+    "actionLabel": "操作",
+    "orderNumber": "订单号",
+    "customer": "客户",
+    "changedFields": "变更字段",
+    "details": "详情",
+    "recordId": "记录ID",
+    "timezoneHint": "时间按北京时间（UTC+8）显示，字段与导出一致。"
+  },
   logisticsRefresh: '刷新物流',
   logisticsRefreshing: '物流查询处理中',
   logisticsNotConfigured: '物流查询尚未配置，请联系管理员开通 AfterShip 或快递 100。',
@@ -13,6 +24,16 @@ export default {
   logisticsPending: '待揽收', logisticsInTransit: '运输中', logisticsOutForDelivery: '派送中',
   logisticsDelivered: '已签收', logisticsException: '物流异常', logisticsExpired: '查询已过期', logisticsUnknown: '暂无物流状态',
   logisticsLastChecked: '最近查询：', logisticsQueryError: '查询失败', logisticsQueryOne: '查询此运单',
+  "orderOffline": {
+    "title": "线下订单", "staff": "员工", "orders": "订单", "items": "商品", "sales": "销售额",
+    "daily": "当日", "monthly": "当月", "date": "线下订单日筛选", "month": "线下订单月筛选"
+  },
+  "orderQueryTimeRange": "时间范围",
+  "recentOrderFilters": {
+    "completed": "今日已完成订单",
+    "pending": "今日待处理订单",
+    "testing": "今日测试订单"
+  },
   "orderTable": {
     "orderTime": "下单时间",
     "orderId": "订单ID",
@@ -235,7 +256,7 @@ export default {
   "action": "操作",
   "view": "查看",
   "edit": "编辑",
-  "delete": "删除",
+  "delete": "移除",
   "loading2": "加载中…",
   "noMatchingOrders": "暂无匹配订单",
   "recordsInTotal": "共 {p0} 条",

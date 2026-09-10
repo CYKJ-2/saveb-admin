@@ -51,12 +51,13 @@ test('edits made while recognition is running are retained', () => {
 
 test('unknown values leave inputs untouched and a new product never inherits a different image', () => {
   const form = emptyForm()
-  form.items = [{ product_name: 'Old Product', image_attachment_id: 42, notes: 'Old note' }]
+  form.items = [{ product_name: 'Old Product', image_attachment_id: 42, image: { id: 42, src: 'blob:http://localhost/old', status: 'ready' }, notes: 'Old note' }]
   applyInvoiceOcr(form, { fields: { customer_email: '', amount_usd: null, items: [{ product_name: 'New Product', quantity: 1 }] } }, structuredClone(form))
   assert.equal(form.customer_email, '')
   assert.equal(form.amount_usd, '')
   assert.equal(form.items[0].price, '')
   assert.equal(form.items[0].image_attachment_id, null)
+  assert.equal(form.items[0].image, undefined)
   assert.equal(form.items[0].notes, '')
 })
 
@@ -72,9 +73,11 @@ test('recognition fills payment status but preserves a selection made while wait
 
 test('reordered OCR products retain matching internal names, notes and thumbnails', () => {
   const form = emptyForm()
+  const bagImage = { id: 41, src: 'data:image/jpeg;base64,YmFn', status: 'ready' }
+  const toteImage = { id: 42, src: 'blob:http://localhost/tote', status: 'ready' }
   form.items = [
-    { product_name: 'Internal Bag', description: 'Leather Bag', image_attachment_id: 41, notes: 'Black' },
-    { product_name: 'Internal Tote', description: 'Canvas Tote', image_attachment_id: 42, notes: 'White' },
+    { product_name: 'Internal Bag', description: 'Leather Bag', image_attachment_id: 41, image: bagImage, notes: 'Black' },
+    { product_name: 'Internal Tote', description: 'Canvas Tote', image_attachment_id: 42, image: toteImage, notes: 'White' },
   ]
   applyInvoiceOcr(form, { fields: { items: [
     { product_name: 'Canvas Tote', description: 'Canvas Tote', quantity: 1, price: 50 },
@@ -84,6 +87,36 @@ test('reordered OCR products retain matching internal names, notes and thumbnail
   assert.deepEqual(form.items.map(item => item.image_attachment_id), [42, 41, null])
   assert.deepEqual(form.items.map(item => item.product_name), ['Internal Tote', 'Internal Bag', 'Scarf'])
   assert.equal(form.items[0].notes, 'White')
+  assert.deepEqual(form.items.map(item => item.image), [toteImage, bagImage, undefined])
+})
+
+test('recognition preserves an uploaded image when expanding the initial product row', () => {
+  const form = emptyForm()
+  const image = { id: 43, src: 'blob:http://localhost/new-upload', status: 'ready' }
+  Object.assign(form.items[0], { image_attachment_id: 43, image })
+  applyInvoiceOcr(form, { fields: { items: [
+    { product_name: 'Bag', quantity: 1, price: 100 },
+    { product_name: 'Tote', quantity: 2, price: 50 },
+  ] } }, structuredClone(form))
+  assert.equal(form.items[0].image_attachment_id, 43)
+  assert.deepEqual(form.items[0].image, image)
+  assert.equal(form.items[1].image_attachment_id, null)
+  assert.equal(form.items[1].image, undefined)
+})
+
+test('recognition retains the current image replacement or removal instead of a stale preview', () => {
+  for (const replacement of [{ id: 45, src: 'blob:http://localhost/replacement', status: 'ready' }, null]) {
+    const form = emptyForm()
+    Object.assign(form.items[0], {
+      image_attachment_id: 44, image: { id: 44, src: 'blob:http://localhost/old', status: 'ready' },
+    })
+    const before = structuredClone(form)
+    form.items[0].image_attachment_id = replacement?.id ?? null
+    form.items[0].image = replacement
+    applyInvoiceOcr(form, { fields: { items: [{ product_name: 'Bag', quantity: 1, price: 100 }] } }, before)
+    assert.equal(form.items[0].image_attachment_id, replacement?.id ?? null)
+    assert.deepEqual(form.items[0].image, replacement)
+  }
 })
 
 test('currency conversion uses rates to USD and leaves unknown currencies unconverted', () => {

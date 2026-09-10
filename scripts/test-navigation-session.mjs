@@ -71,8 +71,10 @@ test('closing one or multiple tabs removes their cache entries without deleting 
 })
 
 let loginId = 1
+const externalMenuModule = await loadSource('../src/utils/external-menu.ts')
 const { useUserStore } = await loadSource('../src/store/user.ts', {
   '@/store/app': appModule,
+  '@/utils/external-menu': externalMenuModule,
   '@/router/permission': { resetDynamicRoutes() {} },
   '@/utils/request': {
     request: {

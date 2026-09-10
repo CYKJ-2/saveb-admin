@@ -1,4 +1,4 @@
-/* 深蓝主题：颜色集中在全局，html.light 继续沿用 index.scss 的浅色主题。 */
+/* 工作台公共颜色映射与深蓝主题；浅色主题集中在 light.css。 */
 :root {
   --workbench-bg: hsl(var(--background-deep));
   --workbench-panel: hsl(var(--card));

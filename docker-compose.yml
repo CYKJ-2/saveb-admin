@@ -1,8 +1,17 @@
+name: saveb-admin-production
 services:
   web:
-    image: ${RELEASE_IMAGE:?immutable image required}
+    build: .
+    image: ${RELEASE_IMAGE:-saveb-admin:server}
     restart: unless-stopped
-    ports: ["127.0.0.1:${ADMIN_PORT:-18000}:80"]
+    ports: ["127.0.0.1:${ADMIN_PORT:-13000}:80"]
+    volumes:
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+        bind:
+          create_host_path: false
     networks: [business]
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/healthz && wget -q -O /dev/null http://127.0.0.1/backend-health"]

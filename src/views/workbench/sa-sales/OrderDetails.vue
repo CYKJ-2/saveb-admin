@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ApiPagination from '@/components/common/ApiPagination.vue'
+import LoadingRegion from '@/components/common/LoadingRegion.vue'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import dayjs from 'dayjs'
@@ -114,7 +115,7 @@ onBeforeUnmount(invalidate)
     <p v-if="optionsError" class="error" role="alert">{{ localizePageMessage(optionsError) }} <button type="button" @click="loadOptions">{{ t('pages.saRetryOptions') }}</button></p>
     <p v-if="error" class="error" role="alert">{{ errorMessage }}</p>
     <p v-if="result" class="muted">{{ t('pages.saDetailResultTotal', { count: number(result.total, locale), amount: usd(result.totalAmount, locale) }) }}</p>
-    <div class="table-wrap" :aria-busy="loading">
+    <LoadingRegion :loading="loading"><div class="table-wrap" :aria-busy="loading">
       <table class="detail-table">
         <thead><tr>
           <th>{{ t('pages.date') }}</th><th>{{ t('pages.orderNumber') }}</th><th>{{ t('pages.customer') }}</th>
@@ -137,11 +138,10 @@ onBeforeUnmount(invalidate)
           </tr>
         </tbody>
       </table>
-      <p v-if="loading" class="empty" role="status">{{ t('pages.loading') }}</p>
-      <p v-else-if="!queried" class="empty">{{ t('pages.saDetailQueryHint') }}</p>
+      <p v-if="!queried" class="empty">{{ t('pages.saDetailQueryHint') }}</p>
       <p v-else-if="result && !result.list.length" class="empty">{{ t('pages.saNoData') }}</p>
     </div>
-    <ApiPagination :page="result?.page || 1" v-model:size="pageSize" :total="result?.total || 0" :loading="loading || !queried" @change="loadPage($event.page)" />
+    <ApiPagination :page="result?.page || 1" v-model:size="pageSize" :total="result?.total || 0" :loading="loading || !queried" @change="loadPage($event.page)" /></LoadingRegion>
   </section>
 </template>
 

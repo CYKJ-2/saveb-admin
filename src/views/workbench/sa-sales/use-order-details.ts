@@ -44,12 +44,14 @@ export function useOrderDetails(initialRange: { startDate: string; endDate: stri
     const current = ++revision
     loading.value = true
     error.value = ''
-    result.value = null
     try {
       const data = await fetchOrders({ ...applied, page, per_page: pageSize.value })
       if (current === revision) result.value = data
     } catch (cause: unknown) {
-      if (current === revision) error.value = cause instanceof Error ? cause.message : 'pages.loadFailedPleaseTryAgain'
+      if (current === revision) {
+        result.value = null
+        error.value = cause instanceof Error ? cause.message : 'pages.loadFailedPleaseTryAgain'
+      }
     } finally {
       if (current === revision) loading.value = false
     }

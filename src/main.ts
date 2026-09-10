@@ -10,6 +10,8 @@ import { registerIcons } from './icons'
 import 'virtual:svg-icons-register'
 import './styles/index.scss'
 import './styles/deep-blue.css'
+import './styles/light.css'
+import './styles/theme-motion.css'
 
 import i18n from './lang'
 

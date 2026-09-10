@@ -67,7 +67,7 @@ export default {
     updated: 'Role updated',
     permissionsAssigned: 'Permissions assigned',
     tip: {
-      actionIncluded: 'Only selected permissions are saved. Selecting a menu does not grant its action permissions.',
+      actionIncluded: 'Selecting a parent selects all descendants; clearing it clears all descendants. A parent is checked when all children are selected, and partially checked when only some are selected.',
       cascadeDisable: 'Disabling this permission will also disable all its child nodes (including buttons). Continue?',
       noCascadeEnable: 'Enabling a parent does not auto-enable its children. Toggle children individually if needed.',
     },

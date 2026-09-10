@@ -27,6 +27,7 @@ const menuIcons: Record<string, Component> = {
   'business.influencer': icons.Star,
   'business.paypal': icons.Wallet,
   'business.operations': icons.List,
+  inspection: icons.Camera,
   system: icons.Setting,
   'system.user': icons.User,
   'system.role': icons.UserFilled,

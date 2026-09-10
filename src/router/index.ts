@@ -59,6 +59,7 @@ export const asyncRoutes: RouteRecordRaw[] = [
     meta: { title: 'workbench', icon: 'ShoppingCart', requiresPermission: 'business' },
     children: [
       { path: 'order-management', name: 'Workbench_order_management', component: () => import('@/views/workbench/order-management/index.vue'), meta: { title: 'business-order', icon: 'ShoppingCartOutlined', requiresPermission: 'dashboard.order_management' } },
+      { path: 'analysis', name: 'Workbench_analysis', component: () => import('@/views/workbench/analysis/index.vue'), meta: { title: 'workbench-analysis', icon: 'DataAnalysis', requiresPermission: 'business.analysis' } },
       { path: 'invoice', name: 'Workbench_invoice', component: () => import('@/views/workbench/invoice/index.vue'), meta: { title: 'workbench-invoice', requiresPermission: 'business.invoice' } },
       { path: 'sa-sales', name: 'Workbench_sa_sales', component: () => import('@/views/workbench/sa-sales/index.vue'), meta: { title: 'workbench-sa-sales', requiresPermission: 'business.sa_sales' } },
       { path: 'procurement', name: 'Workbench_procurement', component: () => import('@/views/workbench/procurement/index.vue'), meta: { title: 'workbench-procurement', requiresPermission: 'business.procurement' } },

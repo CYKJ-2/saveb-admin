@@ -1,0 +1,127 @@
+/* 浅色主题：参考 vue-element-admin 的灰色画布、白色面板及分隔线。 */
+html.light {
+  --background: 216 24% 96%;
+  --background-deep: var(--background);
+  --foreground: 215 25% 23%;
+  --card: 0 0% 100%;
+  --card-foreground: var(--foreground);
+  --popover: 0 0% 100%;
+  --popover-foreground: var(--foreground);
+  --primary: 211 80% 46%;
+  --primary-foreground: 0 0% 100%;
+  --muted: 214 27% 95%;
+  --muted-foreground: 215 16% 44%;
+  --border: 214 28% 88%;
+  --input: 214 25% 83%;
+  --input-background: 0 0% 100%;
+  --input-placeholder: 215 14% 57%;
+  --radius: 10px;
+  --sidebar: 0 0% 100%;
+  --sidebar-deep: var(--sidebar);
+  --sidebar-logo: var(--sidebar);
+  --sidebar-logo-text: var(--foreground);
+  --sidebar-text: 215 23% 32%;
+  --sidebar-text-active: var(--primary);
+  --sidebar-hover: 211 80% 46% / .06;
+  --sidebar-active: 211 80% 46% / .1;
+  --sidebar-submenu: 216 33% 98%;
+  --header: 0 0% 100%;
+
+  --el-color-primary: hsl(var(--primary));
+  --el-color-primary-light-3: #60a0e4;
+  --el-color-primary-light-5: #9bc3ee;
+  --el-color-primary-light-7: #c6def5;
+  --el-color-primary-light-8: #dcebf9;
+  --el-color-primary-light-9: #edf5fd;
+  --el-color-primary-dark-2: #125aab;
+  --el-text-color-primary: hsl(var(--foreground));
+  --el-text-color-regular: #475569;
+  --el-text-color-secondary: hsl(var(--muted-foreground));
+  --el-text-color-placeholder: hsl(var(--input-placeholder));
+  --el-border-color: #d5dde8;
+  --el-border-color-light: #dfe4ed;
+  --el-border-color-lighter: #e6ebf2;
+  --el-border-color-extra-light: #edf1f6;
+  --el-bg-color-page: hsl(var(--background));
+  --el-fill-color: #f0f3f8;
+  --el-fill-color-light: #f4f7fb;
+  --el-fill-color-lighter: #fafbfd;
+  --el-table-header-bg-color: #f4f7fb;
+  --el-table-header-text-color: #52647a;
+  --el-table-border-color: #e1e7ef;
+  --el-card-border-color: #dfe4ed;
+
+  --workbench-header-background: #f4f7fb;
+  --workbench-header-text: #52647a;
+  --workbench-hover: #f1f6fc;
+  --workbench-button-background: #ffffff;
+  --workbench-button-border: #d5dde8;
+  --workbench-button-text: #42566f;
+  --workbench-button-hover: #edf5fd;
+  --workbench-green: #16815c;
+  --workbench-amber: #a56b08;
+  --workbench-red: #cc3845;
+  --tag-active-background: var(--el-color-primary-light-9);
+  --tag-active-text: hsl(var(--primary));
+  --tag-active-border: var(--el-color-primary-light-5);
+
+  /* 达人层级使用独立标签色，避免复用主按钮背景导致绿字叠在蓝底上。 */
+  --creator-tier-background: #f1f5f9;
+  --creator-tier-text: #475569;
+  --creator-tier-border: #cbd5e1;
+  --creator-tier-top-background: #e8f6ef;
+  --creator-tier-top-text: #18734b;
+  --creator-tier-top-border: #b7e2cb;
+  --creator-tier-mid-background: #edf4ff;
+  --creator-tier-mid-text: #245ba6;
+  --creator-tier-mid-border: #bdd1f1;
+}
+
+/* Element Plus 表格在自身声明变量，需与原生业务表格使用同一组颜色。 */
+html.light .el-table {
+  --el-table-bg-color: #ffffff;
+  --el-table-tr-bg-color: #ffffff;
+  --el-table-header-bg-color: var(--workbench-header-background);
+  --el-table-header-text-color: var(--workbench-header-text);
+  --el-table-text-color: var(--el-text-color-regular);
+  --el-table-border-color: #e1e7ef;
+  --el-table-row-hover-bg-color: var(--workbench-hover);
+  --el-table-current-row-bg-color: #edf5fd;
+  border: 1px solid var(--el-table-border-color);
+  border-radius: 8px;
+}
+
+html.light .el-card {
+  --el-card-border-color: #dfe4ed;
+  --el-card-border-radius: 10px;
+}
+
+html.light :is(.card-container, .table-container, .form-container, .module-panel),
+html.light .legacy-workbench > .panel {
+  box-shadow: 0 2px 8px rgb(31 45 61 / 3%);
+}
+
+html.light .sidebar-container {
+  box-shadow: 2px 0 8px rgb(31 45 61 / 3%);
+}
+
+html.light .sidebar-menu .el-menu-item.is-active {
+  font-weight: 600;
+}
+
+html.light .tags-view-container {
+  box-shadow: 0 2px 4px rgb(31 45 61 / 4%);
+}
+
+html.light .el-form-item__label {
+  color: var(--el-text-color-regular);
+}
+
+html.light :is(.el-dialog, .el-message-box, .el-drawer) {
+  box-shadow: 0 12px 40px rgb(31 45 61 / 14%);
+}
+
+html.light .api-pagination .current-page {
+  color: hsl(var(--primary));
+  background: var(--el-color-primary-light-9);
+}
