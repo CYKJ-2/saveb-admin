@@ -151,8 +151,9 @@ onBeforeUnmount(() => { disposed = true; revision++; optionsRevision++ })
         </section>
         <section class="panel">
           <div class="section-heading"><h2>{{ t('analysis.trend') }}</h2><div class="actions"><button :class="{ selected: grain === 'day' }" @click="changeGrain('day')">{{ t('analysis.day') }}</button><button :class="{ selected: grain === 'month' }" @click="changeGrain('month')">{{ t('analysis.month') }}</button></div></div>
-          <p class="muted">{{ t('analysis.trendRange', { start: report.trend.startDate, end: report.trend.endDate }) }} · {{ t('analysis.trendHelp') }}</p>
-          <AnalysisChart :title="t('analysis.trend')" :labels="report.trend.periods" :series="trendSeries" :amount="true" :locale="locale" line />
+          <p class="muted"><template v-if="report.trend.periods.length">{{ t('analysis.trendRange', { start: report.trend.startDate, end: report.trend.endDate }) }} · </template>{{ t('analysis.trendHelp') }}</p>
+          <AnalysisChart v-if="report.trend.periods.length" :title="t('analysis.trend')" :labels="report.trend.periods" :series="trendSeries" :amount="true" :locale="locale" line />
+          <p v-else class="empty">{{ t('analysis.trendBeforeStart') }}</p>
         </section>
         <div class="analysis-distributions">
           <AnalysisDistribution v-for="dimension in dimensions" :key="dimension" :title="t('analysis.title_' + dimension)" :dimension="dimension" :groups="groups(dimension)" />
