@@ -1,8 +1,8 @@
 name: saveb-admin-production
 services:
   web:
-    # 服务器只运行云端构建的镜像，缺少版本时直接报错。
-    image: ${RELEASE_IMAGE:?Set RELEASE_IMAGE to the pulled GHCR image}
+    # 使用服务器 docker build 生成的镜像，也兼容后续镜像仓库发布。
+    image: ${RELEASE_IMAGE:?Set RELEASE_IMAGE to a locally available image}
     restart: unless-stopped
     ports: ["${ADMIN_BIND_IP:-127.0.0.1}:${ADMIN_PORT:-13000}:80"]
     volumes:
