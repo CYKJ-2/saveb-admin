@@ -9,6 +9,7 @@ import AnalysisChart from './AnalysisChart.vue'
 import AnalysisDistribution from './AnalysisDistribution.vue'
 import AnalysisCross from './AnalysisCross.vue'
 import AnalysisDetails from './AnalysisDetails.vue'
+import AnalysisSection from './AnalysisSection.vue'
 import AnalysisHistory from './AnalysisHistory.vue'
 import ImportDialog from './ImportDialog.vue'
 import '../shared/legacy.css'
@@ -156,15 +157,21 @@ onBeforeUnmount(() => { disposed = true; revision++; optionsRevision++ })
         <div class="analysis-distributions">
           <AnalysisDistribution v-for="dimension in dimensions" :key="dimension" :title="t('analysis.title_' + dimension)" :dimension="dimension" :groups="groups(dimension)" />
         </div>
-        <AnalysisCross :title="t('analysis.brandCategory')" :cells="report.crosses.brand_category" />
-        <AnalysisCross :title="t('analysis.categoryPrice')" :cells="report.crosses.category_price" price />
-        <section class="panel"><h2>{{ t('analysis.customerCross') }}</h2><p class="muted">{{ t('analysis.historyHelp') }}</p></section>
-        <AnalysisCross :title="t('analysis.customerBrand')" :cells="report.crosses.customer_brand" customer />
-        <AnalysisCross :title="t('analysis.customerCategory')" :cells="report.crosses.customer_category" customer />
+        <AnalysisCross id="analysis-category-price" :title="t('analysis.categoryPrice')" :cells="report.crosses.category_price" price
+          :row-totals="report.distributions.category" :column-totals="report.distributions.price_band"
+          :total="{ rows: report.summary.eligible_rows, amount: report.summary.amount }" />
+        <AnalysisCross id="analysis-customer-brand" :title="t('analysis.customerBrand')" :cells="report.crosses.customer_brand" customer
+          :row-totals="report.distributions.customer_type" :column-totals="report.distributions.brand"
+          :total="{ rows: report.summary.eligible_rows, amount: report.summary.amount }" />
+        <AnalysisCross id="analysis-customer-category" :title="t('analysis.customerCategory')" :cells="report.crosses.customer_category" customer
+          :row-totals="report.distributions.customer_type" :column-totals="report.distributions.category"
+          :total="{ rows: report.summary.eligible_rows, amount: report.summary.amount }" />
       </template>
       <section v-else-if="!loading" class="panel empty">{{ t('analysis.empty') }}</section>
     </LoadingRegion>
-    <AnalysisDetails v-if="report" :filters="applied" :columns="options.columns" :can-export="can('export')" />
+    <AnalysisSection v-if="report" id="analysis-details" :title="t('analysis.details')" v-slot="{ active }">
+      <AnalysisDetails :active="active" :filters="applied" :columns="options.columns" :can-export="can('export')" />
+    </AnalysisSection>
     <ImportDialog v-model="importOpen" :can-initialize="options.can_initialize" :current-month="options.current_month" @imported="refresh" />
     <AnalysisHistory v-model="historyOpen" />
   </main>

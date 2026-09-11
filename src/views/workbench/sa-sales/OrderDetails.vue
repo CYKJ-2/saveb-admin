@@ -76,25 +76,17 @@ onBeforeUnmount(invalidate)
       </div>
     </header>
     <form class="detail-filters" @submit.prevent="query">
-      <fieldset class="detail-dates">
-        <legend>{{ t('pages.saDetailDate') }}</legend>
-        <div>
-          <input v-model="filters.startDate" type="date" :aria-label="t('pages.startDate')" />
-          <span aria-hidden="true">→</span>
-          <input v-model="filters.endDate" type="date" :aria-label="t('pages.endDate')" />
-        </div>
-      </fieldset>
-      <label>{{ t('pages.salesCategory') }}
-        <select v-model="filters.classification">
-          <option value="">{{ t('pages.saAllCategories') }}</option>
-          <option v-for="category in categories" :key="category" :value="category">{{ businessLabel(category) }}</option>
-        </select>
-      </label>
       <label>{{ t('pages.saSalesperson') }}
         <select v-model="filters.customerService">
           <option value="">{{ t('pages.all') }}</option>
           <option v-for="employee in employees" :key="employee" :value="employee">{{ employee }}</option>
           <option value="Unassigned">{{ label('Unassigned') }}</option>
+        </select>
+      </label>
+      <label>{{ t('pages.salesCategory') }}
+        <select v-model="filters.classification">
+          <option value="">{{ t('pages.saAllCategories') }}</option>
+          <option v-for="category in categories" :key="category" :value="category">{{ businessLabel(category) }}</option>
         </select>
       </label>
       <label>{{ t('pages.orderStatus') }}
@@ -107,6 +99,14 @@ onBeforeUnmount(invalidate)
       <label>{{ t('pages.customerName') }}<input v-model="filters.customerName" type="search" maxlength="255" /></label>
       <label>{{ t('pages.saPaypalAccount') }}<input v-model="filters.paypalAccount" type="search" maxlength="255" /></label>
       <label>{{ t('pages.sourceSite') }}<input v-model="filters.website" type="search" maxlength="255" /></label>
+      <fieldset class="detail-dates">
+        <legend>{{ t('pages.saDetailDate') }}</legend>
+        <div>
+          <input v-model="filters.startDate" type="date" :aria-label="t('pages.startDate')" />
+          <span aria-hidden="true">→</span>
+          <input v-model="filters.endDate" type="date" :aria-label="t('pages.endDate')" />
+        </div>
+      </fieldset>
       <div class="filter-actions">
         <button type="submit" class="primary" :disabled="loading">{{ t('pages.search2') }}</button>
         <button type="button" @click="reset">{{ t('common.reset') }}</button>
@@ -118,13 +118,16 @@ onBeforeUnmount(invalidate)
     <LoadingRegion :loading="loading"><div class="table-wrap" :aria-busy="loading">
       <table class="detail-table">
         <thead><tr>
-          <th>{{ t('pages.date') }}</th><th>{{ t('pages.orderNumber') }}</th><th>{{ t('pages.customer') }}</th>
+          <th>{{ t('pages.date') }}</th><th>{{ t('pages.orderNumber') }}</th><th class="numeric">{{ t('pages.saOrderAmount') }}</th>
+          <th>{{ t('pages.customer') }}</th>
           <th>{{ t('pages.sourceSite') }}</th><th>{{ t('pages.channel') }}</th><th>{{ t('pages.status') }}</th>
-          <th>{{ t('pages.saPaypalAccount') }}</th><th>{{ t('pages.saSalesperson') }}</th><th class="numeric">{{ t('pages.saOrderAmount') }}</th>
+          <th>{{ t('pages.saPaypalAccount') }}</th><th>{{ t('pages.saSalesperson') }}</th>
         </tr></thead>
         <tbody>
           <tr v-for="row in result?.list || []" :key="row.id">
-            <td class="date">{{ row.date }}</td><td>{{ row.orderId }}</td><td>{{ row.customer || '—' }}</td>
+            <td class="date">{{ row.date }}</td><td>{{ row.orderId }}</td>
+            <td class="numeric" :class="{ refund: row.refund }">{{ row.amountUsd == null ? '—' : usd(row.amountUsd, locale) }}</td>
+            <td>{{ row.customer || '—' }}</td>
             <td>{{ label(row.website) || '—' }}</td><td>{{ businessLabel(row.classification) }}</td>
             <td>{{ statusLabel(row.status) }}</td>
             <td>{{ label(row.account) }}</td>
@@ -134,7 +137,6 @@ onBeforeUnmount(invalidate)
               </template>
               <span v-else>{{ label('Unassigned') }}</span>
             </td>
-            <td class="numeric" :class="{ refund: row.refund }">{{ row.amountUsd == null ? '—' : usd(row.amountUsd, locale) }}</td>
           </tr>
         </tbody>
       </table>

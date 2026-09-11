@@ -4,6 +4,14 @@
 
 2026-09-10 已根据用户提供的 df/lvs 确认服务器扩容成功：根文件系统约 588 GB，可用约 507 GB。代码配置已准备不等于服务器已经部署成功；首次镜像构建、数据库迁移及访问入口仍需实际验证。
 
+## 生产镜像与内网访问（2026-09-11 更新）
+
+生产 Compose 只接受显式 RELEASE_IMAGE，不包含 build；先确保当前提交的 GitHub Actions build 成功，再在该项目目录 export RELEASE_IMAGE 为对应 ghcr.io/cykj-2/项目名:sha-完整提交号，docker pull 成功后启动。每次切换项目都重新设置 RELEASE_IMAGE，不能把 API 镜像用于 Collector 或 Admin。操作步骤见 API 仓库的 [应用启动说明](../saveb-api/APPLICATION-START.md)。
+
+Admin 的 .env 设置 ADMIN_BIND_IP=192.168.11.84、ADMIN_PORT=13000，浏览器通过 http://192.168.11.84:13000/dashboard/overview 访问。API 的 APP_URL、FRONTEND_URL、CORS_ALLOWED_ORIGINS 使用同一入口。Admin Nginx 仍监听容器内 80，并代理 /api 到 saveb-api-web:8080；API/Collector 无需向浏览器开放宿主机端口。未设置 ADMIN_BIND_IP 时默认回环监听。
+
+Collector 初次空业务库只有结构时，先运行 python scripts/migrate.py 并启动 api 服务即可。站点规则上下文、汇率和来源账号准备好后，python scripts/preflight.py 通过，再启动 worker/history/maintenance/logistics/beat。/ready 健康仅表示 Collector 表版本可用，不代表规则、来源登录或采集任务已经验收。
+
 ## 文件与配置
 
 | 项目 | 构建文件 | 服务器 Compose | 需要维护的配置 |
@@ -30,6 +38,10 @@ API 的 docker/ 包含 PHP 容器启动、上传限制和健康检查；自动�
 
 ### 三个 .env 的首次填写
 
+模板已统一为 Linux 生产示例，使用 UTF-8（无 BOM）编码；本地 .env 与模板字段一致，但各机器的值独立维护。服务器通常只需填写 API 的 APP_KEY、数据库密码、Redis 密码、共享 Token，以及 Collector 的同库 DSN、相同 Token、收单账号和密码，再核对实际访问入口。其他字段按模板中文说明保留默认值。Admin 没有业务密码，仅配置端口和网络。
+
+旧文件中没有的新字段按模板补齐；已有 .env 不要直接覆盖。APP_TIMEZONE 不是当前 API 的有效配置，Laravel 时区仍由 config/app.php 决定。普通采集间隔在采集管理页面设置，不要添加已停用的 SAVEB_COLLECT_INTERVAL_MINUTES。
+
 在服务器执行，已有 .env 时保留原文件，不显示其内容：
 
 ```bash
@@ -46,7 +58,7 @@ mkdir -p /home/admin_chen/www/saveb-collector/config
 
 | 参数 | 本次服务器值 |
 |---|---|
-| APP_ENV / APP_DEBUG / APP_TIMEZONE | `production` / `false` / `Asia/Shanghai` |
+| APP_ENV / APP_DEBUG | `production` / `false` |
 | API_PORT / DEPLOY_NETWORK | `18088` / `saveb-production` |
 | APP_URL / FRONTEND_URL / CORS_ALLOWED_ORIGINS | 暂均用 `http://127.0.0.1:13000`，通过文末 SSH 隧道验收；以后改真实入口 |
 | APP_KEY | 保留对应新系统原密钥，不能留空或随意重置 |

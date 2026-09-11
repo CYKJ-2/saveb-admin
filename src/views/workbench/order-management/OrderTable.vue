@@ -57,6 +57,9 @@ function productHref(value?: string): string {
         </div>
       </template>
     </el-table-column>
+    <el-table-column :label="t('pages.orderTable.amount')" min-width="135" align="right">
+      <template #default="{ row }">{{ money(row.amount) }} {{ row.currency }}</template>
+    </el-table-column>
     <el-table-column prop="customerFullName" :label="t('pages.orderTable.customerFullName')" min-width="145" />
     <el-table-column prop="clientSite" :label="t('pages.orderTable.sourceSite')" min-width="170">
       <template #default="{ row }">
@@ -76,9 +79,6 @@ function productHref(value?: string): string {
       <template #default="{ row }">{{ businessLabel(row.paymentStatus) }}</template>
     </el-table-column>
     <el-table-column prop="recipientPaypal" :label="t('pages.orderTable.recipientPaypal')" min-width="210" />
-    <el-table-column :label="t('pages.orderTable.amount')" min-width="135" align="right">
-      <template #default="{ row }">{{ money(row.amount) }} {{ row.currency }}</template>
-    </el-table-column>
     <el-table-column prop="productName" :label="t('pages.orderTable.productName')" min-width="200">
       <template #default="{ row }">
         <div class="order-products">

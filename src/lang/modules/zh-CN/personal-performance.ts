@@ -1,0 +1,18 @@
+export default {
+  title: '个人业绩详情', employee: '员工', noEmployees: '暂无可查询的员工',
+  mode: '统计方式', month: '按月份', dates: '按日期', selectedMonth: '业绩月份',
+  previousMonth: '上月', nextMonth: '下月', startDate: '开始日期', endDate: '结束日期',
+  scope: '订单范围', all: '普通订单与 Invoice', order: '普通订单', invoice: 'Invoice 订单',
+  query: '查询', querying: '查询中…', invalidRange: '请选择员工及有效日期，单次查询最多 366 天。',
+  loadFailed: '个人业绩加载失败，请重试。', retry: '重试', noData: '所选员工在此日期范围内暂无订单。',
+  total: '总计', sales: '销售额', refunds: '退款额', netSales: '净销售额',
+  commissionUsd: '销售佣金（USD）', totalOrders: '总单数',
+  refundOrders: '退款单数', refundRateOrders: '退款率（按单量）', refundRateAmount: '退款率（按金额）',
+  calculationNote: '金额按个人分摊记录累计；成交与退款单数分别按“日期＋客户＋订单总金额”去重，总单数只含成交。退款率按单量为退款单数 ÷（成交单数＋退款单数），按金额为退款额 ÷（销售额＋退款额）。佣金按所选范围的合计净销售额统一计算阶梯。',
+  missingRates: '{count} 笔订单缺少美元换算汇率，未计入汇总；可在明细核查。',
+  missingRate: '缺少汇率', dailyTrend: '每日销售趋势', dailyData: '每日数据', dailyEmpty: '暂无销售或退款数据',
+  salesSeries: '销售', refundSeries: '退款', date: '日期',
+  orderDetails: '订单明细', count: '共 {count} 笔订单', orderId: '订单号', customer: '客户', phone: '电话',
+  channel: '渠道', payment: '收款', orderAmount: '订单金额', share: '分成比例', myAmount: '我的金额',
+  refund: '退款', applied: '{employee} · {start} 至 {end} · {scope}',
+}

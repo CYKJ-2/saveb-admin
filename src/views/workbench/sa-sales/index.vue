@@ -12,6 +12,7 @@ import EmployeeComparison from './EmployeeComparison.vue'
 import SalesTrend from './SalesTrend.vue'
 import SalesBreakdown from './SalesBreakdown.vue'
 import OrderDetails from './OrderDetails.vue'
+import PersonalPerformance from './PersonalPerformance.vue'
 import { colors, number, usd } from './format'
 import '../shared/legacy.css'
 
@@ -125,6 +126,7 @@ onMounted(async () => {
       </section>
     </template>
     <OrderDetails v-if="can('list') && detailInitialRange" :initial-range="detailInitialRange" :bounds="bounds" :label="label" />
+    <PersonalPerformance v-if="can('list') && can('personal')" />
   </main>
 </template>
 

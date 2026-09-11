@@ -6,7 +6,7 @@ import ApiPagination from '@/components/common/ApiPagination.vue'
 import LoadingRegion from '@/components/common/LoadingRegion.vue'
 
 type Row = Record<string, any>
-const props = defineProps<{ filters: Row; columns: { key: string; label: string }[]; canExport: boolean }>()
+const props = defineProps<{ active: boolean; filters: Row; columns: { key: string; label: string }[]; canExport: boolean }>()
 const { t, locale } = useI18n()
 const tab = ref('eligible')
 const listing = ref<Row>({ list: [], total: 0, page: 1, per_page: 20 })
@@ -18,6 +18,7 @@ const evidence = ref<Row>()
 const evidenceOpen = ref(false)
 const evidenceLoading = ref(false)
 const exporting = ref(false)
+let needsReload = true
 let revision = 0
 let evidenceRevision = 0
 let disposed = false
@@ -35,7 +36,7 @@ async function load(pagination = { page: 1, per_page: listing.value.per_page }) 
   error.value = ''
   try {
     const data = await workbench.get('/analysis/' + (tab.value === 'customers' ? 'customers' : 'rows'), { ...params.value, ...pagination })
-    if (current === revision && !disposed) listing.value = data
+    if (current === revision && !disposed) { listing.value = data; needsReload = false }
   } catch (e: any) { if (current === revision) error.value = e.message || t('analysis.failed') }
   finally { if (current === revision) loading.value = false }
 }
@@ -72,14 +73,21 @@ async function exportRows() {
   catch (e: any) { error.value = e.message || t('analysis.failed') }
   finally { exporting.value = false }
 }
-watch(() => [props.filters, locale.value], () => { customerKey.value = ''; customerName.value = ''; void load() }, { immediate: true, deep: true })
+watch(() => [props.filters, locale.value], () => {
+  customerKey.value = ''
+  customerName.value = ''
+  needsReload = true
+  revision++
+  loading.value = false
+  if (props.active) void load()
+}, { immediate: true, deep: true })
+watch(() => props.active, active => { if (active && needsReload) void load() })
 onBeforeUnmount(() => { disposed = true; revision++; evidenceRevision++ })
 </script>
 
 <template>
-  <section class="panel detail-section">
+  <div class="detail-section">
     <div class="detail-heading">
-      <h2>{{ t('analysis.details') }}</h2>
       <button v-if="canExport && tab !== 'customers'" :disabled="loading || exporting || !listing.total" @click="exportRows">{{ exporting ? t('analysis.exporting') : t('analysis.export') }}</button>
     </div>
     <div class="detail-tabs" role="tablist" :aria-label="t('analysis.details')">
@@ -114,7 +122,7 @@ onBeforeUnmount(() => { disposed = true; revision++; evidenceRevision++ })
       </div>
       <ApiPagination :page="listing.page" :size="listing.per_page" :total="listing.total" :loading="loading" @change="load" />
     </LoadingRegion>
-  </section>
+  </div>
   <el-dialog v-model="evidenceOpen" :title="t('analysis.evidence')" width="min(760px, 94vw)">
     <LoadingRegion :loading="evidenceLoading">
       <div v-if="evidence" class="evidence">
@@ -135,7 +143,7 @@ onBeforeUnmount(() => { disposed = true; revision++; evidenceRevision++ })
 </template>
 <style scoped>
 .detail-heading, .detail-tabs, .customer-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.detail-heading { justify-content: space-between; }
+.detail-heading { justify-content: flex-end; }
 .detail-tabs { margin: 10px 0 14px; }
 .detail-tabs .active { border-color: var(--workbench-blue, #409eff); color: var(--workbench-blue, #409eff); background: color-mix(in srgb, var(--workbench-blue, #409eff) 12%, transparent); }
 .detail-scroll { overflow: auto; max-height: 650px; border: 1px solid var(--el-border-color); border-radius: 8px; }

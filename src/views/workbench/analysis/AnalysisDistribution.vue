@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import * as echarts from 'echarts/core'
 import { PieChart } from 'echarts/charts'
 import { TooltipComponent, LegendComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import { useChartTheme } from '@/views/dashboard/composables/useChartTheme'
+import AnalysisShare from './AnalysisShare.vue'
 
 echarts.use([PieChart, TooltipComponent, LegendComponent, CanvasRenderer])
 type Group = { key: string; name_zh: string; name_en: string; rows: number; amount: string; share: string }
@@ -18,7 +19,6 @@ let resize: ResizeObserver | undefined
 const money = (value: string) => Number(value).toLocaleString(locale.value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const name = (group: Group) => ['customer_type', 'purchase_method'].includes(props.dimension) || group.key === 'negative'
   ? t('analysis.' + group.key) : (locale.value === 'en-US' ? group.name_en : group.name_zh)
-const largest = computed(() => Math.max(1, ...props.groups.map(row => Math.abs(Number(row.amount)))))
 function render() {
   chart?.setOption({
     color: ['#5b9cff', '#26b99a', '#a48afa', '#e7ac4d', '#e37c98', '#5cb9cf', '#7886cd', '#96ad63', '#bb8c64'],
@@ -56,8 +56,8 @@ onBeforeUnmount(() => { resize?.disconnect(); chart?.dispose() })
         <tbody>
           <tr v-for="(row, index) in groups" :key="row.key">
             <td>{{ index + 1 }}</td><td>{{ name(row) }}</td><td>{{ row.rows }}</td>
-            <td><b>{{ money(row.amount) }}</b><div class="bar"><i :style="{ width: Math.abs(Number(row.amount)) / largest * 100 + '%' }" /></div></td>
-            <td>{{ money(row.share) }}%</td>
+            <td><b>{{ money(row.amount) }}</b></td>
+            <td><AnalysisShare :value="row.share" /></td>
           </tr>
           <tr v-if="!groups.length"><td colspan="5" class="empty">{{ t('analysis.noRows') }}</td></tr>
         </tbody>
@@ -70,5 +70,4 @@ onBeforeUnmount(() => { resize?.disconnect(); chart?.dispose() })
 .ranking-scroll { max-height: 330px; overflow: auto; border: 1px solid var(--workbench-line, var(--el-border-color)); border-radius: 8px; }
 .ranking-scroll th { position: sticky; top: 0; z-index: 1; }
 .ranking-scroll td, .ranking-scroll th { text-align: left; white-space: nowrap; }
-.ranking-scroll .bar { width: 100%; min-width: 95px; }
 </style>

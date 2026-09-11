@@ -1,0 +1,18 @@
+export default {
+  title: 'Personal Performance', employee: 'Employee', noEmployees: 'No employees available',
+  mode: 'Period', month: 'By month', dates: 'By date', selectedMonth: 'Performance month',
+  previousMonth: 'Previous month', nextMonth: 'Next month', startDate: 'Start date', endDate: 'End date',
+  scope: 'Order scope', all: 'Regular & Invoice orders', order: 'Regular orders', invoice: 'Invoice orders',
+  query: 'Query', querying: 'Loading…', invalidRange: 'Select an employee and valid dates. Each query supports up to 366 days.',
+  loadFailed: 'Could not load personal performance. Please try again.', retry: 'Retry', noData: 'No orders for this employee in the selected period.',
+  total: 'Summary', sales: 'Sales', refunds: 'Refunds', netSales: 'Net sales',
+  commissionUsd: 'Sales commission (USD)', totalOrders: 'Total orders',
+  refundOrders: 'Refund orders', refundRateOrders: 'Refund rate (orders)', refundRateAmount: 'Refund rate (amount)',
+  calculationNote: 'Amounts sum individual allocation records. Sales and refund counts are deduplicated separately by date, customer and full order amount; total orders excludes refunds. Refund rates are refund orders ÷ (sales orders + refund orders) and refund amount ÷ (sales + refunds). Tiered commission uses combined net sales over the selected period.',
+  missingRates: '{count} orders have no USD exchange rate and are excluded from the summary. Check the order details.',
+  missingRate: 'Missing FX rate', dailyTrend: 'Daily Sales Trend', dailyData: 'Daily Data', dailyEmpty: 'No sales or refunds for this period',
+  salesSeries: 'Sales', refundSeries: 'Refunds', date: 'Date',
+  orderDetails: 'Order Details', count: '{count} orders', orderId: 'Order ID', customer: 'Customer', phone: 'Phone',
+  channel: 'Channel', payment: 'Payment', orderAmount: 'Order amount', share: 'Share', myAmount: 'My amount',
+  refund: 'Refund', applied: '{employee} · {start} to {end} · {scope}',
+}

@@ -1,10 +1,10 @@
 name: saveb-admin-production
 services:
   web:
-    build: .
-    image: ${RELEASE_IMAGE:-saveb-admin:server}
+    # 服务器只运行云端构建的镜像，缺少版本时直接报错。
+    image: ${RELEASE_IMAGE:?Set RELEASE_IMAGE to the pulled GHCR image}
     restart: unless-stopped
-    ports: ["127.0.0.1:${ADMIN_PORT:-13000}:80"]
+    ports: ["${ADMIN_BIND_IP:-127.0.0.1}:${ADMIN_PORT:-13000}:80"]
     volumes:
       - type: bind
         source: ./nginx.conf

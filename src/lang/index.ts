@@ -14,6 +14,8 @@ import zhCN_operations from './modules/zh-CN/operations'
 import enUS_operations from './modules/en-US/operations'
 import zhCN_analysis from './modules/zh-CN/analysis'
 import enUS_analysis from './modules/en-US/analysis'
+import zhCN_personalPerformance from './modules/zh-CN/personal-performance'
+import enUS_personalPerformance from './modules/en-US/personal-performance'
 
 import zhCN_common from './modules/zh-CN/common'
 import zhCN_login from './modules/zh-CN/login'
@@ -34,6 +36,7 @@ import enUS_system from './modules/en-US/system'
 import enUS_route from './modules/en-US/route'
 
 const zhCN = {
+  personalPerformance: zhCN_personalPerformance,
   analysis: zhCN_analysis,
   operations: zhCN_operations,
   paypal: zhCN_paypal,
@@ -50,6 +53,7 @@ const zhCN = {
 }
 
 const enUS = {
+  personalPerformance: enUS_personalPerformance,
   analysis: enUS_analysis,
   operations: enUS_operations,
   paypal: enUS_paypal,
