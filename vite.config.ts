@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import Components from 'unplugin-vue-components/vite'
@@ -11,7 +11,11 @@ const portIndex = process.argv.indexOf('--port')
 const portOption = process.argv.find((arg) => arg.startsWith('--port='))?.split('=')[1]
 const devPort = Number(portOption || (portIndex >= 0 ? process.argv[portIndex + 1] : 3000))
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(({ command, mode }) => {
+  // Go 迁移期只切换代理入口，浏览器仍使用 /api；设回 8080 即可回到 PHP。
+  const env = loadEnv(mode, __dirname, 'VITE_API_PROXY_TARGET')
+  const apiProxyTarget = env.VITE_API_PROXY_TARGET || 'http://localhost:8080'
+  return ({
   cacheDir: resolve(__dirname, 'node_modules/.vite', command === 'serve' ? `dev-${devPort}` : 'build'),
   plugins: [
     vue(),
@@ -43,7 +47,7 @@ export default defineConfig(({ command }) => ({
       // 后端基础地址 http://localhost:8080
       // 业务接口前缀 /api/*（如 /api/auth/login → http://localhost:8080/api/auth/login）
       '/api': {
-        target: 'http://localhost:8080',
+        target: apiProxyTarget,
         changeOrigin: true,
         // 不重写路径：/api/* 直接转发到后端 /api/*
       }
@@ -57,4 +61,5 @@ export default defineConfig(({ command }) => ({
       }
     }
   }
-}))
+  })
+})
