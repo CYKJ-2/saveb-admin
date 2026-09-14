@@ -7,12 +7,16 @@ export function getDashboardTrendPeriod(
   granularity: 'day' | 'month',
 ): { requestRange: DashboardRange; displayRange: DashboardRange } {
   const unit = granularity === 'month' ? 'year' : 'month'
+  const displayRange = {
+    startDate: dayjs(selectedRange.startDate).startOf(unit).format('YYYY-MM-DD'),
+    endDate: dayjs(selectedRange.endDate).endOf(unit).format('YYYY-MM-DD'),
+  }
+  // 日趋势直接请求整月数据，兼容尚未自动扩展月份的后端版本。
+  // 扩展后超过接口 366 天限制时仍传原筛选区间，由后端校验后补齐月份。
+  const requestFullMonths = granularity === 'day'
+    && dayjs(displayRange.endDate).diff(dayjs(displayRange.startDate), 'day') <= 365
   return {
-    // 后端先校验原筛选区间，再扩展统计周期，避免补齐月份或年份后超过查询长度限制。
-    requestRange: { ...selectedRange },
-    displayRange: {
-      startDate: dayjs(selectedRange.startDate).startOf(unit).format('YYYY-MM-DD'),
-      endDate: dayjs(selectedRange.endDate).endOf(unit).format('YYYY-MM-DD'),
-    },
+    requestRange: { ...(requestFullMonths ? displayRange : selectedRange) },
+    displayRange,
   }
 }
