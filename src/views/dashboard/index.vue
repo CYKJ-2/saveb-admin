@@ -21,8 +21,7 @@ const clock = ref(new Date())
 const selected = ref<[string, string]>([businessDate(), businessDate()])
 const applied = ref<DashboardRange>({ startDate: selected.value[0], endDate: selected.value[1] })
 const granularity = ref<'day' | 'month'>('day')
-const hasCustomRange = ref(false)
-const trendPeriod = computed(() => getDashboardTrendPeriod(applied.value, granularity.value, hasCustomRange.value))
+const trendPeriod = computed(() => getDashboardTrendPeriod(applied.value, granularity.value))
 const metric = ref<'sales' | 'orders'>('sales')
 interface State { loading: boolean; error: string; result: DashboardResult | null; revision: number }
 const states = reactive(Object.fromEntries(dashboardModules.map(module => [module, { loading: false, error: '', result: null, revision: 0 }])) as Record<DashboardModule, State>)
@@ -61,13 +60,12 @@ async function loadModule(module: DashboardModule) {
   finally { if (revision === state.revision) state.loading = false }
 }
 function loadAll() { return Promise.allSettled(dashboardModules.map(loadModule)) }
-function apply(useCustomRange = hasCustomRange.value) {
+function apply() {
   if (!selected.value?.[0] || !selected.value?.[1]) { ElMessage.warning(t('pages.selectADateRange')); return }
   if (dayjs(selected.value[1]).diff(dayjs(selected.value[0]), 'day') > 365) { ElMessage.warning(t('pages.theDateRangeCannotExceed366Days')); return }
-  hasCustomRange.value = useCustomRange
   applied.value = { startDate: selected.value[0], endDate: selected.value[1] }; loadAll()
 }
-function today() { selected.value = [businessDate(), businessDate()]; apply(false) }
+function today() { selected.value = [businessDate(), businessDate()]; apply() }
 let timer: ReturnType<typeof setInterval>
 onMounted(() => { timer = setInterval(() => clock.value = new Date(), 1000); loadAll() })
 onBeforeUnmount(() => { clearInterval(timer); dashboardModules.forEach(module => states[module].revision++) })
@@ -79,7 +77,7 @@ onBeforeUnmount(() => { clearInterval(timer); dashboardModules.forEach(module =>
     <section class="date-toolbar" :aria-label="t('pages.overviewDateFilter')">
       <div class="date-control">
         <span>{{ t('pages.dateRange') }}</span>
-        <el-date-picker v-model="selected" type="daterange" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :start-placeholder="t('pages.startDate')" :end-placeholder="t('pages.endDate')" :clearable="false" :shortcuts="shortcuts" :range-separator="t('pages.to2')" @change="apply(true)" />
+        <el-date-picker v-model="selected" type="daterange" value-format="YYYY-MM-DD" format="YYYY-MM-DD" :start-placeholder="t('pages.startDate')" :end-placeholder="t('pages.endDate')" :clearable="false" :shortcuts="shortcuts" :range-separator="t('pages.to2')" @change="apply()" />
       </div>
       <el-button type="primary" :icon="Refresh" :loading="pending" @click="apply()">{{ t('pages.applyRefresh') }}</el-button>
       <el-button @click="today">{{ t('pages.today') }}</el-button>

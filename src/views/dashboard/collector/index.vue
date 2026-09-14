@@ -25,6 +25,9 @@ let disposed = false
 const format = (value?: string | null) => value ? new Intl.DateTimeFormat(locale.value, { timeZone: 'Asia/Shanghai', dateStyle: 'short', timeStyle: 'medium', hour12: false }).format(new Date(value)) : '—'
 const labels = computed<Record<string, string>>(() => ({ queued: text('排队中', 'Queued'), running: text('运行中', 'Running'), retrying: text('重试中', 'Retrying'), succeeded: text('成功', 'Succeeded'), failed: text('失败', 'Failed'), partial_failed: text('部分失败', 'Partially failed'), cancelled: text('已取消', 'Cancelled'), history: text('范围更新', 'Range update'), missing: text('仅补缺', 'Missing dates'), reprocess: text('归档重算', 'Archive recalculation'), refresh: text('字段刷新', 'Field refresh'), today: text('当天采集', 'Today') }))
 const label = (value: string) => labels.value[value] || value
+const jobModeLabel = (job: CollectionJob) => job.params.task_kind === 'open_recheck'
+  ? text('历史订单复查', 'Historical order recheck')
+  : job.mode === 'pending' ? text('历史 Pending 发现', 'Historical Pending discovery') : label(job.mode)
 const operationDescription = computed(() => form.mode === 'history'
   ? text('重新获取指定范围的订单，按订单号比较后新增或更新，并保留人工调整，不复活人工删除的订单。', 'Fetch orders in the selected range, then insert or update by order number while preserving manual edits and keeping manually deleted orders deleted.')
   : form.mode === 'missing'
@@ -143,8 +146,8 @@ onBeforeUnmount(() => { disposed = true })
       <el-alert v-if="loadError" type="error" :closable="false" :title="text('任务列表读取失败，请点击刷新重试', 'Unable to load tasks. Click Refresh to retry.')" />
       <LoadingRegion :loading="loading"><el-table :data="jobs" stripe>
         <el-table-column :label="text('创建时间', 'Created')" min-width="165"><template #default="{row}">{{ format(row.createdAt) }}</template></el-table-column>
-        <el-table-column :label="text('模式', 'Mode')" min-width="110"><template #default="{row}">{{ label(row.mode) }}<small v-if="row.publication === 'preview'">{{ text('预览，不入库', 'Preview only') }}</small></template></el-table-column>
-        <el-table-column :label="text('日期范围', 'Date range')" min-width="200"><template #default="{row}">{{ row.params.start || '—' }} ~ {{ row.params.end || '—' }}</template></el-table-column>
+        <el-table-column :label="text('模式', 'Mode')" min-width="150"><template #default="{row}">{{ jobModeLabel(row) }}<small v-if="row.publication === 'preview'">{{ text('预览，不入库', 'Preview only') }}</small></template></el-table-column>
+        <el-table-column :label="text('日期范围', 'Date range')" min-width="200"><template #default="{row}"><template v-if="row.params.task_kind === 'open_recheck'">{{ text('按历史单号复查＋滚动补采，见详情', 'Historical orders and rolling catch-up; see details') }}</template><template v-else>{{ row.params.start || '—' }} ~ {{ row.params.end || '—' }}</template></template></el-table-column>
         <el-table-column :label="text('状态', 'Status')" min-width="120"><template #default="{row}"><el-tag :type="tagType(row.status)">{{ label(row.status) }}</el-tag></template></el-table-column>
         <el-table-column :label="text('成功分片', 'Completed chunks')" width="115"><template #default="{row}">{{ row.completed }} / {{ row.total }}</template></el-table-column>
         <el-table-column :label="text('完成时间', 'Finished')" min-width="165"><template #default="{row}">{{ format(row.completedAt) }}</template></el-table-column>

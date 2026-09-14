@@ -23,7 +23,7 @@ export interface CollectionSchedule { intervalMinutes: number; nextRunAt: string
 export interface CollectionJob {
   jobId: string; mode: string; status: string; actor: string; error: string | null
   publication: string; createdAt: string; completedAt: string | null; completed: number; total: number
-  params: { start?: string; end?: string; source_job_id?: string; dry_run?: boolean }
+  params: { start?: string; end?: string; source_job_id?: string; dry_run?: boolean; task_kind?: string; background_job_id?: string }
 }
 export interface CollectionChunk { id: number; scope: {day?: string; order_id?: string}; status: string; attempts: number; error: string | null; counts: Record<string, number>; committed_at: string | null }
 export interface CollectionPage<T> { items: T[]; total: number; page: number; pageSize: number }
