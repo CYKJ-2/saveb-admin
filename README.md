@@ -1,5 +1,7 @@
 # SAVEB ERP Admin
 
+部署复盘和日常命令统一入口：[部署与数据迁移操作手册](../saveb-api/部署与数据迁移操作手册.md)。已上线的前端更新直接使用手册第 4.1 节。
+
 当前服务器部署采用 **本地 push → 服务器 git pull → 服务器构建镜像并启动 Docker Compose**，无需 GHCR 或 runner。完整命令见 [服务器启动说明](../saveb-api/APPLICATION-START.md)；自动发布文档留作后续启用时参考。
 
 服务器自动发布见 [AUTODEPLOY.md](AUTODEPLOY.md)：本地 push main → GitHub 云端测试/构建 → GHCR → 内网 runner 拉镜像部署和健康检查。首次数据迁移及固定端口见 [SERVER-DEPLOY.md](SERVER-DEPLOY.md)。真实 .env、nginx.conf 和业务数据由服务器独立维护。
